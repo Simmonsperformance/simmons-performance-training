@@ -1,0 +1,481 @@
+.coach,
+.audience,
+.philosophy,
+.goals,
+.gallery,
+.faq,
+.intake {
+  background: #f7f5f2;
+}
+
+.coach .section-label,
+.audience .section-label,
+.philosophy .section-label,
+.goals .section-label,
+.gallery .section-label,
+.faq .section-label,
+.intake .section-label {
+  margin-bottom: 10px;
+}
+
+.coach-grid,
+.contact-grid,
+.intake-grid,
+.faq-shell {
+  display: grid;
+  gap: 32px;
+}
+
+.coach-grid {
+  grid-template-columns: 360px minmax(0, 1fr);
+  align-items: center;
+  margin-top: 36px;
+}
+
+.coach-photo-card {
+  background: #fff;
+  border: 1px solid #d7d6d0;
+  padding: 18px;
+}
+
+.coach-photo {
+  display: block;
+  width: 100%;
+  height: 440px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.coach-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.coach-kicker {
+  margin: 0;
+  color: #101010;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.coach-meta {
+  margin: 0;
+  color: #e30613;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.coach-copy p {
+  margin: 0;
+  color: #5d5d5c;
+  line-height: 1.75;
+}
+
+.coach-copy .button {
+  width: max-content;
+  margin-top: 6px;
+}
+
+.audience-grid,
+.philosophy-grid,
+.goals-grid,
+.gallery-grid {
+  margin-top: 36px;
+}
+
+.audience h2,
+.goals h2,
+.faq-shell h2,
+.intake h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  line-height: 0.86;
+  font-size: clamp(52px, 6vw, 92px);
+  margin: 0;
+}
+
+.audience h2,
+.goals h2,
+.faq-shell h2,
+.intake h2,
+.section-heading h2 span,
+.online-heading h2 span,
+.contact-intro h2 span {
+  color: #e30613;
+}
+
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.audience-item,
+.goal-item,
+.philosophy-card,
+.gallery-item {
+  background: #fff;
+  border: 1px solid #d7d6d0;
+}
+
+.audience-item {
+  padding: 22px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.audience-copy,
+.philosophy-copy,
+.intake-copy p,
+.faq-list p {
+  margin: 24px 0 0;
+  max-width: 760px;
+  color: #5d5d5c;
+  line-height: 1.7;
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.philosophy-card {
+  display: flex;
+  align-items: center;
+  min-height: 82px;
+  padding: 22px 18px;
+}
+
+.philosophy-card span {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.goal-item {
+  padding: 20px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.gallery-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 190px;
+  border: 1px dashed #aeb1b5;
+  background: repeating-linear-gradient(
+    135deg,
+    #e2e3e4 0,
+    #e2e3e4 1px,
+    #f2f3f3 1px,
+    #f2f3f3 9px
+  );
+  color: #72757a;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+}
+
+.faq-shell {
+  grid-template-columns: 0.9fr 1.1fr;
+  align-items: start;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-list details {
+  background: #fff;
+  border: 1px solid #d7d6d0;
+  padding: 0 18px 0 20px;
+}
+
+.faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  cursor: pointer;
+  padding: 18px 0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.faq-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-list summary::after {
+  content: '+';
+  font-size: 22px;
+  color: #e30613;
+}
+
+.faq-list details[open] summary::after {
+  content: '−';
+}
+
+.faq-list p {
+  margin: 0;
+  padding: 0 0 18px;
+}
+
+.intake-grid {
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+}
+
+.intake-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.intake .button-primary {
+  width: max-content;
+}
+
+.intake-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: #fff;
+  border: 1px solid #d7d6d0;
+  padding: 26px;
+}
+
+.intake-form .form-row,
+.contact-form .form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.intake-form label,
+.contact-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: #101010;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.intake-form input,
+.intake-form textarea,
+.contact-form input,
+.contact-form textarea,
+.contact-form select {
+  width: 100%;
+  background: #f4f3f0;
+  border: 1px solid #d7d6d0;
+  padding: 14px 15px;
+  color: #101010;
+  font: inherit;
+}
+
+.intake-form textarea,
+.contact-form textarea {
+  resize: vertical;
+  min-height: 110px;
+}
+
+.intake-form .button-dark {
+  align-self: flex-start;
+}
+
+.online-category-grid-expanded {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.product-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-top: 1px solid #eceae5;
+  border-bottom: 1px solid #eceae5;
+  color: #686863;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+  .coach-grid,
+  .contact-grid,
+  .intake-grid,
+  .faq-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .audience-grid,
+  .philosophy-grid,
+  .gallery-grid,
+  .online-category-grid-expanded {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .site-header {
+    height: auto;
+  }
+
+  .site-header .nav-wrap {
+    position: relative;
+    padding: 24px 0;
+  }
+
+  .site-nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    background: #fff;
+    border-bottom: 1px solid #d7d6d0;
+    padding: 18px 20px 22px;
+  }
+
+  .site-nav.open {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .site-nav a {
+    width: 100%;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0efea;
+  }
+
+  .site-nav .nav-cta {
+    margin-top: 8px;
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 800px) {
+  .section-pad {
+    padding: 80px 0;
+  }
+
+  .hero {
+    min-height: 620px;
+  }
+
+  .hero-bottom {
+    display: block;
+    padding-bottom: 18px;
+  }
+
+  .hero-bottom p {
+    margin-bottom: 10px;
+  }
+
+  .intro-grid,
+  .audience-grid,
+  .philosophy-grid,
+  .gallery-grid,
+  .faq-shell,
+  .goals-grid,
+  .online-category-grid-expanded,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .coach-photo {
+    height: 300px;
+  }
+
+  .footer-top,
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    width: min(100% - 28px, 1160px);
+  }
+
+  .hero h1 {
+    font-size: 72px;
+  }
+
+  .section-heading h2,
+  .online-heading h2,
+  .statement-content h2,
+  .contact-intro h2,
+  .faq-shell h2,
+  .audience h2,
+  .goals h2,
+  .intake h2,
+  .intro-content h2 {
+    font-size: 52px;
+  }
+
+  .button,
+  .coach-copy .button,
+  .intake .button-primary,
+  .intake-form .button-dark {
+    width: 100%;
+  }
+
+  .audience-item,
+  .goal-item,
+  .philosophy-card,
+  .contact-form,
+  .intake-form {
+    padding: 18px;
+  }
+
+  .gallery-item {
+    min-height: 160px;
+  }
+}

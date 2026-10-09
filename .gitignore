@@ -1,0 +1,22 @@
+# Local secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# Private product PDFs
+/Programs/*.pdf
+**/Programs/*.pdf
+
+# Keep all Supabase files out of public GitHub
+/supabase/
+
+# Private admin and deployment files
+/admin-orders.html
+/DEPLOYMENT.md
+
+# Dependencies and operating-system files
+node_modules/
+.DS_Store
+Thumbs.db
