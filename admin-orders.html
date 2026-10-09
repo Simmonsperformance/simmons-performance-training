@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Orders | Simmons Performance Training</title>
+  <style>
+    :root { color-scheme: light; --ink: #111; --paper: #f0efea; --red: #e30613; --gold: #c6a15b; --line: #d7d6d0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 14px/1.5 "DM Sans", Arial, sans-serif; }
+    header { padding: 24px clamp(18px, 4vw, 44px); background: #111; border-bottom: 3px solid var(--gold); color: #fff; }
+    header p { margin: 0 0 5px; color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    h1 { margin: 0; font: 36px/.95 "Bebas Neue", Impact, sans-serif; text-transform: uppercase; }
+    main { width: min(1080px, calc(100% - 32px)); margin: 28px auto; }
+    .panel { padding: 22px; border: 1px solid var(--line); border-top: 4px solid var(--red); background: #fff; }
+    .login-panel { width: min(440px, 100%); margin: 8vh auto; }
+    form { display: grid; gap: 14px; }
+    label { display: grid; gap: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); background: #f7f6f3; font: inherit; }
+    button { min-height: 40px; padding: 9px 14px; border: 0; background: #111; color: #fff; font: 700 11px inherit; text-transform: uppercase; cursor: pointer; }
+    button.primary { background: var(--red); }
+    button:disabled { opacity: .55; cursor: wait; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .orders { display: grid; gap: 12px; }
+    .order { padding: 18px; border: 1px solid var(--line); border-left: 4px solid var(--gold); background: #fff; }
+    .order h2 { margin: 0 0 8px; font: 26px/.95 "Bebas Neue", Impact, sans-serif; text-transform: uppercase; }
+    .order dl { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px 20px; margin: 0; }
+    .order dl div { min-width: 0; }
+    dt { color: #666; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .status { min-height: 20px; margin: 12px 0 0; color: #a20812; font-size: 12px; }
+    .muted { color: #666; font-size: 12px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 600px) { .order dl { grid-template-columns: 1fr; } .toolbar { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <header><p>Simmons Performance Training</p><h1>Digital orders</h1></header>
+  <main>
+    <section class="panel login-panel" id="login-panel">
+      <h2>Administrator sign in</h2>
+      <p class="muted">Only the configured order administrator can view or manage orders.</p>
+      <form id="login-form">
+        <label>Email<input type="email" name="email" autocomplete="username" required></label>
+        <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+        <button class="primary" type="submit">Sign in</button>
+      </form>
+      <p class="status" id="login-status" role="status" aria-live="polite"></p>
+    </section>
+    <section id="orders-panel" hidden>
+      <div class="toolbar"><p class="muted">Payment confirmation is a manual action. Verify funds in your account before confirming.</p><div><button id="refresh-orders">Refresh orders</button> <button id="sign-out">Sign out</button></div></div>
+      <div class="orders" id="orders"></div>
+      <p class="status" id="orders-status" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="order-config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    (() => {
+      const config = window.SPT_ORDER_CONFIG;
+      const client = window.supabase.createClient(config.supabaseUrl, config.publishableKey);
+      const loginPanel = document.querySelector('#login-panel');
+      const ordersPanel = document.querySelector('#orders-panel');
+      const loginForm = document.querySelector('#login-form');
+      const loginStatus = document.querySelector('#login-status');
+      const ordersContainer = document.querySelector('#orders');
+      const ordersStatus = document.querySelector('#orders-status');
+      const requestedOrderId = new URLSearchParams(location.search).get('order');
+
+      const callAdmin = async (session, payload) => {
+        const response = await fetch(config.manageOrdersUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: config.publishableKey,
+            Authorization: `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        const body = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(body.error || 'Order request failed.');
+        return body;
+      };
+
+      const renderOrders = (orders) => {
+        ordersContainer.replaceChildren();
+        if (!orders.length) {
+          ordersStatus.textContent = 'No orders found.';
+          return;
+        }
+        ordersStatus.textContent = '';
+        for (const order of orders) {
+          const card = document.createElement('article');
+          card.className = 'order';
+          card.id = `order-${order.id}`;
+          const title = document.createElement('h2');
+          title.textContent = order.product_name;
+          const details = document.createElement('dl');
+          const entries = [
+            ['Order ID', order.id], ['Amount', `$${(order.amount_cents / 100).toFixed(2)} ${order.currency}`],
+            ['Customer', order.customer_name], ['Email', order.customer_email], ['Phone', order.customer_phone || 'Not provided'],
+            ['Payment method', order.payment_method], ['Payment status', order.payment_status], ['Delivery status', order.delivery_status],
+            ['Submitted', new Date(order.created_at).toLocaleString()], ['Notes', order.notes || 'None']
+          ];
+          for (const [label, value] of entries) {
+            const row = document.createElement('div');
+            const term = document.createElement('dt');
+            const description = document.createElement('dd');
+            term.textContent = label;
+            description.textContent = value;
+            row.append(term, description);
+            details.append(row);
+          }
+          card.append(title, details);
+          const actions = document.createElement('div');
+          actions.className = 'actions';
+          if (order.payment_status === 'pending' && order.delivery_status === 'pending') {
+            const confirm = document.createElement('button');
+            confirm.className = 'primary';
+            confirm.textContent = 'Confirm payment and deliver';
+            confirm.addEventListener('click', () => runAction(order.id, 'confirm_payment', 'Confirm only after verifying payment reached your account.'));
+            actions.append(confirm);
+          } else if (order.payment_status === 'paid' && order.delivery_status === 'failed') {
+            const retry = document.createElement('button');
+            retry.className = 'primary';
+            retry.textContent = 'Retry email delivery';
+            retry.addEventListener('click', () => runAction(order.id, 'retry_delivery', 'Retry only after checking that the previous delivery email was rejected and not delivered.'));
+            actions.append(retry);
+          } else if (order.delivery_status === 'unknown' || order.delivery_status === 'delivering') {
+            const warning = document.createElement('p');
+            warning.className = 'muted';
+            warning.textContent = 'Delivery outcome requires manual reconciliation. Check EmailJS logs before attempting any resend.';
+            actions.append(warning);
+          }
+          if (actions.childNodes.length) card.append(actions);
+          if (order.last_delivery_error) {
+            const error = document.createElement('p');
+            error.className = 'muted';
+            error.textContent = `Delivery note: ${order.last_delivery_error}`;
+            card.append(error);
+          }
+          ordersContainer.append(card);
+        }
+        if (requestedOrderId) document.querySelector(`#order-${CSS.escape(requestedOrderId)}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+
+      const loadOrders = async () => {
+        const { data } = await client.auth.getSession();
+        if (!data.session) return;
+        ordersStatus.textContent = 'Loading orders…';
+        try {
+          const result = await callAdmin(data.session, { action: 'list_orders' });
+          renderOrders(result.orders || []);
+        } catch (error) {
+          ordersStatus.textContent = error.message;
+        }
+      };
+
+      const runAction = async (orderId, action, confirmation) => {
+        if (!window.confirm(confirmation)) return;
+        const { data } = await client.auth.getSession();
+        if (!data.session) return;
+        ordersStatus.textContent = 'Processing order…';
+        try {
+          const result = await callAdmin(data.session, { action, order_id: orderId });
+          ordersStatus.textContent = result.delivery_status === 'delivered'
+            ? 'Payment is recorded and the customer delivery email was accepted by the email service.'
+            : result.error || 'Order updated.';
+          await loadOrders();
+        } catch (error) {
+          ordersStatus.textContent = error.message;
+        }
+      };
+
+      loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const data = new FormData(loginForm);
+        loginStatus.textContent = 'Signing in…';
+        const result = await client.auth.signInWithPassword({ email: data.get('email'), password: data.get('password') });
+        if (result.error) {
+          loginStatus.textContent = 'Sign-in failed. Verify the configured administrator account.';
+          return;
+        }
+        loginStatus.textContent = '';
+        loginPanel.hidden = true;
+        ordersPanel.hidden = false;
+        await loadOrders();
+      });
+
+      document.querySelector('#refresh-orders').addEventListener('click', loadOrders);
+      document.querySelector('#sign-out').addEventListener('click', async () => {
+        await client.auth.signOut();
+        ordersPanel.hidden = true;
+        loginPanel.hidden = false;
+      });
+      client.auth.getSession().then(({ data }) => {
+        if (data.session) {
+          loginPanel.hidden = true;
+          ordersPanel.hidden = false;
+          loadOrders();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
