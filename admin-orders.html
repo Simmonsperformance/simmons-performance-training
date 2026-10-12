@@ -53,9 +53,18 @@
       <p class="status" id="login-status" role="status" aria-live="polite"></p>
     </section>
     <section id="orders-panel" hidden>
-      <div class="toolbar"><p class="muted">Payment confirmation is a manual action. Verify funds in your account before confirming.</p><div><button id="refresh-orders">Refresh orders</button> <button id="sign-out">Sign out</button></div></div>
-      <div class="orders" id="orders"></div>
-      <p class="status" id="orders-status" role="status" aria-live="polite"></p>
+      <div class="toolbar"><p class="muted">Manage digital orders and appointments here. Verify payment before confirming either workflow.</p><div><button id="refresh-orders">Refresh orders</button> <button id="sign-out">Sign out</button></div></div>
+      <nav class="admin-tabs" aria-label="Admin sections">
+        <button id="orders-tab-button" type="button" aria-selected="true">Digital orders</button>
+        <button id="appointments-tab-button" type="button" aria-selected="false">Appointments</button>
+      </nav>
+      <section id="digital-orders-tab">
+        <div class="orders" id="orders"></div>
+        <p class="status" id="orders-status" role="status" aria-live="polite"></p>
+      </section>
+      <section id="appointments-tab" hidden>
+        <iframe id="appointment-admin-frame" title="Appointment requests, approval, and payment verification" loading="lazy" style="width:100%;min-height:900px;border:1px solid var(--line);background:#101010"></iframe>
+      </section>
     </section>
   </main>
   <script src="order-config.js"></script>
