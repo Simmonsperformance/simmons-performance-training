@@ -132,6 +132,8 @@ Deno.serve(async (req: Request) => {
         return respond({ error: "Could not load available times" }, 500, origin);
       }
 
+      // The database availability function blocks every 60-minute overlap,
+      // including pending requests, across all services.
       return respond({ slots: data ?? [] }, 200, origin);
     }
 
@@ -221,6 +223,8 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // Reserve atomically in Postgres. Its advisory lock and conflict check
+    // prevent overlapping bookings even when two customers submit at once.
     const { data, error } = await supabase.rpc("reserve_appointment", {
       p_slot_id: slot_id,
       p_service_key: service_key,
@@ -245,90 +249,76 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // The server is the single sender for appointment request emails.
-    // The browser must not send a second EmailJS notification.
-    try {
-      const { data: booking, error: bookingError } = await supabase
-        .from("bookings")
-        .select("id, service_key, athlete_name, athlete_age, sport, position, athlete_email, guardian_name, guardian_email, guardian_phone, training_goals, notes, payment_method, booking_slots(starts_at)")
-        .eq("id", data)
-        .maybeSingle();
+    // Notify the business that a request arrived. This is not a customer
+    // confirmation; customer confirmation is sent only after admin approval
+    // and payment verification in manage-appointments.
+    const requestTemplateId = Deno.env.get("APPOINTMENT_REQUEST_TEMPLATE_ID") ||
+      Deno.env.get("EMAILJS_APPOINTMENT_REQUEST_TEMPLATE_ID");
+    const serviceDetails: Record<string, { name: string; price: string }> = {
+      "one-on-one": { name: "1-on-1 Session", price: "$75 / session" },
+      "group-speed": { name: "Group Speed Training", price: "$55 / athlete" },
+      "three-times-weekly": { name: "3x Weekly Package", price: "$195 / week" },
+      "house-call": { name: "House Call Session", price: "$100 / session" },
+    };
+    let notificationEmail = "not_configured";
+    if (requestTemplateId) {
+      try {
+        const { data: booking } = await supabase.from("bookings").select(`
+          id, service_key, athlete_name, athlete_age, sport, position, athlete_email,
+          guardian_name, guardian_email, guardian_phone, training_goals, notes,
+          booking_slots(starts_at, ends_at)
+        `).eq("id", data).maybeSingle();
+        const slot = Array.isArray(booking?.booking_slots)
+          ? booking.booking_slots[0] : booking?.booking_slots;
+        const startsAt = slot?.starts_at ? new Date(slot.starts_at) : null;
+        const endsAt = slot?.ends_at ? new Date(slot.ends_at) : null;
+        const appointmentDate = startsAt ? new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Phoenix", weekday: "long", year: "numeric", month: "long", day: "numeric",
+        }).format(startsAt) : "See admin appointment dashboard";
+        const appointmentTime = startsAt ? new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Phoenix", hour: "numeric", minute: "2-digit",
+        }).format(startsAt) : "See admin appointment dashboard";
+        const appointmentEnd = endsAt ? new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Phoenix", hour: "numeric", minute: "2-digit",
+        }).format(endsAt) : "";
+       
+const adminUrl = `https://simmonsperformance.github.io/simmons-performance-training/admin-orders.html?booking=${encodeURIComponent(String(data))}`;
 
-      if (bookingError || !booking) {
-        console.error("Booking saved, but appointment email details could not be loaded:", bookingError?.message);
-      } else {
-        const slot = Array.isArray(booking.booking_slots) ? booking.booking_slots[0] : booking.booking_slots;
-        const start = slot?.starts_at ? new Date(slot.starts_at) : null;
-        const dateText = start ? new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/Phoenix", weekday: "long", month: "long", day: "numeric", year: "numeric"
-        }).format(start) : "Not available";
-        const timeText = start ? new Intl.DateTimeFormat("en-US", {
-          timeZone: "America/Phoenix", hour: "numeric", minute: "2-digit"
-        }).format(start) : "Not available";
-        const serviceDetails: Record<string, { name: string; price: string }> = {
-          "one-on-one": { name: "1-on-1 Session", price: "$75 / session" },
-          "group-speed": { name: "Group Speed Training", price: "$55 / athlete" },
-          "three-times-weekly": { name: "3x Weekly Package", price: "$195 / week" },
-          "house-call": { name: "House Call Session", price: "$100 / session" },
-        };
-        const service = serviceDetails[booking.service_key] || { name: booking.service_key, price: "See booking details" };
-        const adminUrl = `https://simmonsperformance.github.io/simmons-performance-training/admin-orders.html?booking=${encodeURIComponent(booking.id)}`;
-        const customerEmail = booking.guardian_email || booking.athlete_email || "";
-        const submittedAt = new Date().toISOString();
-        const notesText = [
-          booking.training_goals ? `Training goals: ${booking.training_goals}` : "",
-          booking.notes || "",
-        ].filter(Boolean).join("\\n") || "None provided";
-
-        await sendEmailJs("template_t8ci7aw", {
+        await sendEmailJs(requestTemplateId, {
           to_email: "simmonsperftraining@gmail.com",
-          customer_name: booking.guardian_name || booking.athlete_name,
-          customer_email: customerEmail,
-          customer_phone: booking.guardian_phone || "Not provided",
-          athlete_name: booking.athlete_name,
-          athlete_age: String(booking.athlete_age ?? ""),
-          athlete_email: booking.athlete_email || "",
-          parent_name: booking.guardian_name || "",
-          parent_email: booking.guardian_email || "",
-          parent_phone: booking.guardian_phone || "",
-          sport: booking.sport || "",
-          position: booking.position || "",
-          training_goals: booking.training_goals || "",
-          product_service: service.name,
-          price: service.price,
-          payment_method: booking.payment_method || "See booking notes",
+          subject: `Appointment Request - ${booking?.athlete_name || athlete_name}`,
+          booking_id: data,
+          customer_name: booking?.athlete_name || athlete_name,
+          athlete_name: booking?.athlete_name || athlete_name,
+          customer_email: booking?.guardian_email || booking?.athlete_email || guardian_email || athlete_email || "",
+          athlete_email: booking?.athlete_email || athlete_email || "",
+          parent_name: booking?.guardian_name || guardian_name || "",
+          parent_email: booking?.guardian_email || guardian_email || "",
+          parent_phone: booking?.guardian_phone || guardian_phone || "",
+          product_service: serviceDetails[booking?.service_key || service_key]?.name || booking?.service_key || service_key,
+          price: serviceDetails[booking?.service_key || service_key]?.price || "See booking details",
+          amount: serviceDetails[booking?.service_key || service_key]?.price || "See booking details",
+          payment_method: ((booking?.notes || notes || "").match(/Payment method:\s*([^\n]+)/i)?.[1] || "Not provided").trim(),
+          appointment_date: appointmentDate,
+          appointment_time: appointmentEnd ? `${appointmentTime} – ${appointmentEnd}` : appointmentTime,
+          appointment_datetime: `${appointmentDate} at ${appointmentTime} Arizona time`,
           payment_status: "Pending approval and payment verification",
-          appointment_date: dateText,
-          appointment_time: timeText,
-          appointment_datetime: `${dateText} at ${timeText} Arizona time`,
-          notes: notesText,
-          submitted_at: submittedAt,
-          booking_id: booking.id,
-          order_id: booking.id,
+          notes: booking?.notes || notes || "",
+          submitted_at: new Date().toISOString(),
+          order_id: data,
+          business_contact: "simmonsperftraining@gmail.com",
           admin_url: adminUrl,
           review_url: adminUrl,
           booking_url: adminUrl,
-          subject: `NEW APPOINTMENT REQUEST - ${service.name}`,
-          message: [
-            "NEW APPOINTMENT REQUEST",
-            `Athlete: ${booking.athlete_name}`,
-            `Service: ${service.name}`,
-            `Price: ${service.price}`,
-            `Appointment date: ${dateText}`,
-            `Appointment time: ${timeText} Arizona time`,
-            `Customer email: ${customerEmail}`,
-            `Customer phone: ${booking.guardian_phone || "Not provided"}`,
-            `Booking ID: ${booking.id}`,
-            `Review request: ${adminUrl}`,
-          ].join("\\n"),
         });
+        notificationEmail = "sent";
+      } catch (emailError) {
+        notificationEmail = "failed";
+        console.error("Appointment request email failed:", emailError);
       }
-    } catch (emailError) {
-      // The appointment is already reserved; log email failure without losing it.
-      console.error("Appointment saved, but business notification failed:", emailError instanceof Error ? emailError.message : "Unknown error");
     }
 
-    return respond({ success: true, booking_id: data }, 200, origin);
+    return respond({ success: true, booking_id: data, notification_email: notificationEmail }, 200, origin);
   } catch (error) {
     console.error(
       "Booking endpoint error:",
