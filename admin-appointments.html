@@ -129,15 +129,27 @@
   async function act(booking, action, method, notes, button) {
     button.disabled = true;
     try {
-      await callAdmin({
+      const result = await callAdmin({
         action,
         booking_id: booking.id,
         payment_method: method || null,
         admin_notes: notes || null
       });
-      showMessage(action === "verify_payment"
-        ? "Appointment and payment confirmed. Check the message below for any email warning."
-        : action === "approve" ? "Appointment approved. Payment still needs to be verified." : "Appointment rejected.");
+      if (action === "verify_payment") {
+        const emailStatus = result.confirmation_email;
+        const emailMessage = emailStatus === "sent"
+          ? " Customer approval email sent."
+          : emailStatus === "failed"
+            ? " WARNING: appointment confirmed, but the customer email failed. Check EmailJS / Supabase logs."
+            : emailStatus === "missing_customer_email"
+              ? " WARNING: no customer email address was saved."
+              : " WARNING: customer email was not sent. Check the EmailJS template configuration.";
+        showMessage("Appointment and payment confirmed." + emailMessage, emailStatus !== "sent");
+      } else {
+        showMessage(action === "approve"
+          ? "Appointment approved. Payment still needs to be verified."
+          : "Appointment rejected.");
+      }
       await loadAppointments();
     } catch (error) {
       showMessage(error.message, true);
