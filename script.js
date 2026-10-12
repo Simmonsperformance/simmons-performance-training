@@ -619,6 +619,14 @@ bookingForm?.addEventListener('submit', async (event) => {
       paymentMethod: String(
         formData.get('paymentMethod') || ''
       ),
+      paymentInstructions: String(formData.get('paymentMethod') || '').toLowerCase().includes('zelle')
+        ? {
+            recipient: 'Kaleb Simmons',
+            phone: '480-504-9992',
+            amount: String(formData.get('price') || ''),
+            note: `${athleteName} - ${service}`
+          }
+        : null,
 
       athleteName,
       parentName,
