@@ -483,6 +483,9 @@ updateBookingReview();
 bookingForm?.addEventListener('submit', async (event) => {
   event.preventDefault();
 
+  // Prevent repeated clicks from creating duplicate appointment notifications.
+  if (bookingForm.dataset.submitting === 'true') return;
+
   const formData = new FormData(bookingForm);
 
   const service = String(
@@ -559,6 +562,7 @@ bookingForm?.addEventListener('submit', async (event) => {
   const appointmentDate = selected.date;
   const appointmentTime = selected.time;
 
+  bookingForm.dataset.submitting = 'true';
   bookingSubmit.disabled = true;
   bookingSubmit.textContent = 'RESERVING APPOINTMENT…';
 
@@ -631,7 +635,7 @@ bookingForm?.addEventListener('submit', async (event) => {
 
     const emailConfig = window.SPT_EMAIL_CONFIG;
     const siteBase = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
-    const adminUrl = `${siteBase}admin-appointments.html?booking=${encodeURIComponent(result.booking_id)}`;
+    const adminUrl = `${siteBase}admin-orders.html?booking=${encodeURIComponent(result.booking_id)}`;
 
     if (
       window.emailjs &&
@@ -662,6 +666,19 @@ bookingForm?.addEventListener('submit', async (event) => {
         notes: String(formData.get('notes') || ''),
         appointment_date: appointmentDate,
         appointment_time: confirmationDetails.time,
+        appointment_datetime: `${appointmentDate} at ${confirmationDetails.time} Arizona time`,
+        message: [
+          'NEW APPOINTMENT REQUEST',
+          `Athlete: ${athleteName}`,
+          `Service: ${service}`,
+          `Price: ${String(formData.get('price') || '')}`,
+          `Appointment date: ${appointmentDate}`,
+          `Appointment time: ${confirmationDetails.time} Arizona time`,
+          `Customer email: ${parentEmail || athleteEmail}`,
+          `Customer phone: ${parentPhone || 'Not provided'}`,
+          `Booking ID: ${result.booking_id}`,
+          `Review appointment: ${adminUrl}`
+        ].join('\\n'),
         submitted_at: new Date().toISOString(),
         booking_id: result.booking_id,
         admin_url: adminUrl,
@@ -712,6 +729,7 @@ sessionStorage.setItem(
         error.message || 'Please try again.'
       }`;
 
+    bookingForm.dataset.submitting = 'false';
     bookingSubmit.disabled = false;
 
     bookingSubmit.innerHTML =
