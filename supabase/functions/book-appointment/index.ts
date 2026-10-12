@@ -298,7 +298,7 @@ const adminUrl = `https://simmonsperformance.github.io/simmons-performance-train
           product_service: serviceDetails[booking?.service_key || service_key]?.name || booking?.service_key || service_key,
           price: serviceDetails[booking?.service_key || service_key]?.price || "See booking details",
           amount: serviceDetails[booking?.service_key || service_key]?.price || "See booking details",
-          payment_method: ((booking?.notes || notes || "").match(/Payment method:\s*([^\n]+)/i)?.[1] || "Not provided").trim(),
+          payment_method: ((booking?.notes || notes || "").match(/Payment method:\s*(Zelle|cash in person|cash)/i)?.[1] || "Not provided").trim(),
           appointment_date: appointmentDate,
           appointment_time: appointmentEnd ? `${appointmentTime} – ${appointmentEnd}` : appointmentTime,
           appointment_datetime: `${appointmentDate} at ${appointmentTime} Arizona time`,
