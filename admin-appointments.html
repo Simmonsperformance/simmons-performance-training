@@ -117,7 +117,13 @@
   function formatDate(value) {
     if (!value) return "—";
     const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString();
+    return Number.isNaN(date.getTime())
+      ? "—"
+      : date.toLocaleString("en-US", {
+          timeZone: "America/Phoenix",
+          dateStyle: "medium",
+          timeStyle: "short"
+        }) + " (Arizona time)";
   }
 
   async function act(booking, action, method, notes, button) {
