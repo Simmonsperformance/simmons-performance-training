@@ -628,75 +628,9 @@ bookingForm?.addEventListener('submit', async (event) => {
       confirmedAt: new Date().toISOString()
     };
 
-    // Notify the business of the request only. The customer receives a
-    // final confirmation later, after approval and verified payment.
-    let emailNotice =
-      'Your request was saved. The business email notification may need attention.';
-
-    const emailConfig = window.SPT_EMAIL_CONFIG;
-    const siteBase = window.location.origin + window.location.pathname.replace(/[^/]*$/, '');
-    const adminUrl = `${siteBase}admin-orders.html?booking=${encodeURIComponent(result.booking_id)}`;
-
-    if (
-      window.emailjs &&
-      emailConfig?.publicKey &&
-      emailConfig?.serviceId &&
-      emailConfig?.businessTemplateId
-    ) {
-      const templateParams = {
-        to_email: 'simmonsperftraining@gmail.com',
-        customer_name: athleteName,
-        customer_email: parentEmail || athleteEmail,
-        customer_phone: parentPhone,
-        athlete_name: athleteName,
-        athlete_age: String(formData.get('athleteAge') || ''),
-        athlete_email: athleteEmail,
-        parent_name: parentName,
-        parent_email: parentEmail,
-        parent_phone: parentPhone,
-        sport: String(formData.get('sport') || ''),
-        position: String(formData.get('position') || ''),
-        training_goals: String(formData.get('goals') || ''),
-        training_experience: String(formData.get('experience') || ''),
-        current_fitness_level: String(formData.get('fitness') || ''),
-        injury_history: String(formData.get('injuryHistory') || ''),
-        product_service: service,
-        price: String(formData.get('price') || ''),
-        payment_method: String(formData.get('paymentMethod') || ''),
-        notes: String(formData.get('notes') || ''),
-        appointment_date: appointmentDate,
-        appointment_time: confirmationDetails.time,
-        appointment_datetime: `${appointmentDate} at ${confirmationDetails.time} Arizona time`,
-        message: [
-          'NEW APPOINTMENT REQUEST',
-          `Athlete: ${athleteName}`,
-          `Service: ${service}`,
-          `Price: ${String(formData.get('price') || '')}`,
-          `Appointment date: ${appointmentDate}`,
-          `Appointment time: ${confirmationDetails.time} Arizona time`,
-          `Customer email: ${parentEmail || athleteEmail}`,
-          `Customer phone: ${parentPhone || 'Not provided'}`,
-          `Booking ID: ${result.booking_id}`,
-          `Review appointment: ${adminUrl}`
-        ].join('\n'),
-        submitted_at: new Date().toISOString(),
-        booking_id: result.booking_id,
-        admin_url: adminUrl,
-        review_url: adminUrl,
-        booking_url: adminUrl,
-        subject: `NEW APPOINTMENT REQUEST - ${service}`,
-        business_contact: 'simmonsperftraining@gmail.com'
-      };
-
-      try {
-        window.emailjs.init({ publicKey: emailConfig.publicKey });
-        await window.emailjs.send(emailConfig.serviceId, emailConfig.businessTemplateId, templateParams);
-        emailNotice = 'Your request was saved and the business notification was sent.';
-      } catch (emailError) {
-        console.error('Booking saved but business notification failed:', emailError);
-        emailNotice = 'Your request was saved, but the business email notification failed. Contact simmonsperftraining@gmail.com.';
-      }
-    }
+    // Business notification is sent only by the Supabase booking function.
+    // Do not send a second EmailJS message from the browser.
+    const emailNotice = 'Your request was saved. The business will review it shortly.';
 
     // Save details for the confirmation page.
     confirmationDetails.emailNotice = emailNotice;
