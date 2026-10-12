@@ -1,0 +1,9 @@
+project_id = "abbvzklzlsvyytlwhnmg"
+
+[functions.create-digital-order]
+verify_jwt = false
+
+[functions.manage-digital-orders]
+verify_jwt = false
+[functions.manage-appointments]
+verify_jwt = false
