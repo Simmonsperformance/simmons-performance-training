@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
   }
 
   const method = body.payment_method == null ? null : String(body.payment_method);
-  if (method !== null && !["zelle", "cash"].includes(method)) {
+  if (method !== null && !["zelle", "cash_in_person"].includes(method)) {
     return reply({ error: "Choose Zelle or cash in person" }, 400);
   }
 
