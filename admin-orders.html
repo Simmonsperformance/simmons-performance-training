@@ -30,13 +30,17 @@
     dd { margin: 2px 0 0; overflow-wrap: anywhere; }
     .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
     .status { min-height: 20px; margin: 12px 0 0; color: #a20812; font-size: 12px; }
+    .admin-tabs { display:flex; gap:8px; flex-wrap:wrap; margin:16px 0; }
+    .admin-tabs button[aria-selected="true"] { background:var(--red); }
+    #appointments-tab { padding:0; border:0; background:transparent; }
+    #appointment-admin-frame { width:100%; min-height:900px; border:1px solid var(--line); background:#101010; }
     .muted { color: #666; font-size: 12px; }
     [hidden] { display: none !important; }
     @media (max-width: 600px) { .order dl { grid-template-columns: 1fr; } .toolbar { align-items: flex-start; flex-direction: column; } }
   </style>
 </head>
 <body>
-  <header><p>Simmons Performance Training</p><h1>Digital orders</h1><p style="margin-top:12px"><a href="admin-appointments.html" style="color:#fff;text-decoration:underline">Manage appointments</a></p></header>
+  <header><p>Simmons Performance Training</p><h1>Admin Dashboard</h1></header>
   <main>
     <section class="panel login-panel" id="login-panel">
       <h2>Administrator sign in</h2>
@@ -66,7 +70,33 @@
       const loginStatus = document.querySelector('#login-status');
       const ordersContainer = document.querySelector('#orders');
       const ordersStatus = document.querySelector('#orders-status');
-      const requestedOrderId = new URLSearchParams(location.search).get('order');
+      const query = new URLSearchParams(location.search);
+      const requestedOrderId = query.get('order');
+      const requestedBookingId = query.get('booking');
+      const ordersTab = document.querySelector('#digital-orders-tab');
+      const appointmentsTab = document.querySelector('#appointments-tab');
+      const ordersTabButton = document.querySelector('#orders-tab-button');
+      const appointmentsTabButton = document.querySelector('#appointments-tab-button');
+      const appointmentFrame = document.querySelector('#appointment-admin-frame');
+      let appointmentFrameLoaded = false;
+
+      const showAdminTab = (tab) => {
+        const showAppointments = tab === 'appointments';
+        ordersTab.hidden = showAppointments;
+        appointmentsTab.hidden = !showAppointments;
+        ordersTabButton.setAttribute('aria-selected', String(!showAppointments));
+        appointmentsTabButton.setAttribute('aria-selected', String(showAppointments));
+        if (showAppointments && !appointmentFrameLoaded) {
+          const target = new URL('admin-appointments.html', window.location.href);
+          if (requestedBookingId) target.searchParams.set('booking', requestedBookingId);
+          appointmentFrame.src = target.toString();
+          appointmentFrameLoaded = true;
+        }
+      };
+
+      ordersTabButton.addEventListener('click', () => showAdminTab('orders'));
+      appointmentsTabButton.addEventListener('click', () => showAdminTab('appointments'));
+      if (requestedBookingId) showAdminTab('appointments');
 
       const callAdmin = async (session, payload) => {
         const response = await fetch(config.manageOrdersUrl, {
