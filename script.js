@@ -678,7 +678,7 @@ bookingForm?.addEventListener('submit', async (event) => {
           `Customer phone: ${parentPhone || 'Not provided'}`,
           `Booking ID: ${result.booking_id}`,
           `Review appointment: ${adminUrl}`
-        ].join('\\n'),
+        ].join('\n'),
         submitted_at: new Date().toISOString(),
         booking_id: result.booking_id,
         admin_url: adminUrl,
