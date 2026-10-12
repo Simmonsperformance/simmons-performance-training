@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
 
   if (body.action === "list") {
     const { data, error } = await db.from("bookings").select(`
-      id, slot_id, service_key, athlete_name, age, sport, position,
+      id, slot_id, service_key, athlete_name, athlete_age, sport, position,
       athlete_email, guardian_name, guardian_email, guardian_phone,
       training_goals, notes, status, created_at, payment_method,
       payment_status, approved_at, paid_at, admin_notes,
@@ -69,9 +69,10 @@ Deno.serve(async (req) => {
   }
 
   const method = body.payment_method == null ? null : String(body.payment_method);
-  if (method !== null && !["zelle", "cash_in_person"].includes(method)) {
-    return reply({ error: "Choose Zelle or cash in person" }, 400);
+  if (method !== null && !["zelle", "cash", "cash_in_person"].includes(method)) {
+    return reply({ error: "Choose Zelle or cash" }, 400);
   }
+  const normalizedMethod = method === "cash" ? "cash_in_person" : method;
 
   const notes = body.admin_notes == null ? null : String(body.admin_notes);
   if (notes !== null && notes.length > 2000) {
@@ -82,7 +83,7 @@ Deno.serve(async (req) => {
     p_booking_id: bookingId,
     p_action: action,
     p_admin_id: auth.user.id,
-    p_payment_method: method,
+    p_payment_method: normalizedMethod,
     p_admin_notes: notes,
   });
 
@@ -91,57 +92,72 @@ Deno.serve(async (req) => {
     return reply({ error: error.message }, 400);
   }
 
-  // Only send the customer-facing confirmation after the admin explicitly
-  // verifies payment. Approval alone never triggers this email.
+  // The RPC must successfully approve payment before we send a final
+  // customer confirmation. The email contains appointment details, no PDFs.
+  let confirmationEmail = "not_applicable";
   if (action === "verify_payment") {
-    const { data: booking, error: bookingError } = await db.from("bookings")
-      .select(`id, service_key, athlete_name, athlete_email, guardian_name, guardian_email, guardian_phone, payment_method, payment_status, booking_slots(starts_at, ends_at)`)
-      .eq("id", bookingId).maybeSingle();
+    const { data: booking, error: bookingError } = await db.from("bookings").select(`
+      id, service_key, athlete_name, athlete_email, guardian_name,
+      guardian_email, guardian_phone, payment_method, payment_status, status,
+      booking_slots(starts_at, ends_at)
+    `).eq("id", bookingId).maybeSingle();
 
     if (bookingError || !booking) {
-      console.error("Payment was recorded, but confirmation details could not be loaded:", bookingError?.message);
-      return reply({ success: true, result: data, warning: "Payment was recorded, but confirmation email could not be prepared." });
+      console.error("Appointment updated but could not load confirmation details:", bookingError?.message);
+      return reply({ success: true, result: data, confirmation_email: "details_unavailable" });
     }
 
-    const slot = Array.isArray(booking.booking_slots) ? booking.booking_slots[0] : booking.booking_slots;
-    const serviceDetails: Record<string, { name: string; price: string }> = {
-      "one-on-one": { name: "1-on-1 Session", price: "$75 / session" },
-      "group-speed": { name: "Group Speed Training", price: "$55 / athlete" },
-      "three-times-weekly": { name: "3x Weekly Package", price: "$195 / week" },
-      "house-call": { name: "House Call Session", price: "$100 / session" },
-    };
-    const service = serviceDetails[booking.service_key] || { name: booking.service_key, price: "See booking details" };
+    const slot = Array.isArray(booking.booking_slots)
+      ? booking.booking_slots[0] : booking.booking_slots;
     const customerEmail = booking.guardian_email || booking.athlete_email;
-    if (customerEmail) {
-      const start = slot?.starts_at ? new Date(slot.starts_at) : null;
-      const dateText = start ? new Intl.DateTimeFormat("en-US", { timeZone: "America/Phoenix", weekday: "long", month: "long", day: "numeric", year: "numeric" }).format(start) : "See appointment details";
-      const timeText = start ? new Intl.DateTimeFormat("en-US", { timeZone: "America/Phoenix", hour: "numeric", minute: "2-digit" }).format(start) : "See appointment details";
+    // Never fall back to the general purchase/digital-delivery template.
+    // Appointment confirmation requires its own dedicated EmailJS template.
+    const templateId = Deno.env.get("APPOINTMENT_CONFIRMATION_TEMPLATE_ID") ||
+      Deno.env.get("EMAILJS_APPOINTMENT_CONFIRMATION_TEMPLATE_ID");
+
+    if (booking.status === "confirmed" && ["paid", "verified"].includes(String(booking.payment_status)) && customerEmail && templateId) {
       try {
-        await sendEmailJs("template_mgv2at6", {
+        const startsAt = slot?.starts_at ? new Date(slot.starts_at) : null;
+        const endsAt = slot?.ends_at ? new Date(slot.ends_at) : null;
+        const dateText = startsAt ? new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Phoenix", weekday: "long", year: "numeric", month: "long", day: "numeric",
+        }).format(startsAt) : "See your appointment details";
+        const timeText = startsAt ? new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Phoenix", hour: "numeric", minute: "2-digit",
+        }).format(startsAt) : "See your appointment details";
+        const endText = endsAt ? new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/Phoenix", hour: "numeric", minute: "2-digit",
+        }).format(endsAt) : "";
+        await sendEmailJs(templateId, {
           to_email: customerEmail,
+          customer_email: customerEmail,
           customer_name: booking.guardian_name || booking.athlete_name,
           athlete_name: booking.athlete_name,
-          customer_email: customerEmail,
-          customer_phone: booking.guardian_phone || "Not provided",
-          product_service: service.name,
-          price: service.price,
+          parent_name: booking.guardian_name || "",
+          parent_email: booking.guardian_email || "",
+          product_service: booking.service_key,
           appointment_date: dateText,
-          appointment_time: timeText,
-          payment_method: booking.payment_method === "cash_in_person" ? "Cash in person" : "Zelle",
-          payment_status: "Paid — verified by Simmons Performance Training",
+          appointment_time: endText ? `${timeText} – ${endText}` : timeText,
           booking_id: booking.id,
-          appointment_confirmation: "Your appointment has been approved and payment has been verified. Your appointment is confirmed.",
-          subject: `Appointment Confirmed - ${service.name}`,
+          payment_status: "Payment verified",
+          appointment_confirmation: "Your appointment is confirmed.",
+          subject: "Appointment Confirmed - Simmons Performance Training",
           business_contact: "simmonsperftraining@gmail.com",
         });
+        confirmationEmail = "sent";
       } catch (emailError) {
-        console.error("Payment confirmed but customer email failed:", emailError instanceof Error ? emailError.message : "Unknown error");
-        return reply({ success: true, result: data, warning: "Appointment and payment are confirmed, but the customer confirmation email failed to send. Check EmailJS logs." });
+        console.error("Appointment confirmed but customer email failed:", bookingId, emailError);
+        confirmationEmail = "failed";
       }
     } else {
-      return reply({ success: true, result: data, warning: "Appointment and payment are confirmed, but no customer email is on file." });
+      confirmationEmail = !customerEmail
+        ? "missing_customer_email"
+        : !templateId
+          ? "missing_email_template"
+          : booking.status !== "confirmed" || !["paid", "verified"].includes(String(booking.payment_status))
+            ? "booking_not_paid_and_confirmed"
+            : "missing_email_template";
     }
   }
-
-  return reply({ success: true, result: data });
+  return reply({ success: true, result: data, confirmation_email: confirmationEmail });
 });
