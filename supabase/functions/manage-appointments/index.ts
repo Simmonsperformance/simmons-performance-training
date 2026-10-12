@@ -112,8 +112,13 @@ Deno.serve(async (req) => {
     const customerEmail = booking.guardian_email || booking.athlete_email;
     // Never fall back to the general purchase/digital-delivery template.
     // Appointment confirmation requires its own dedicated EmailJS template.
-    const templateId = Deno.env.get("APPOINTMENT_CONFIRMATION_TEMPLATE_ID") ||
+    const configuredTemplateId = Deno.env.get("APPOINTMENT_CONFIRMATION_TEMPLATE_ID") ||
       Deno.env.get("EMAILJS_APPOINTMENT_CONFIRMATION_TEMPLATE_ID");
+    // This known template contains purchase and digital-download copy, so
+    // explicitly refuse it for appointments even if accidentally configured.
+    const templateId = configuredTemplateId && configuredTemplateId !== "template_mgv2at6"
+      ? configuredTemplateId
+      : null;
 
     if (booking.status === "confirmed" && ["paid", "verified"].includes(String(booking.payment_status)) && customerEmail && templateId) {
       try {
