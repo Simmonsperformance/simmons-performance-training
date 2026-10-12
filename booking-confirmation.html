@@ -141,9 +141,18 @@
     </section>
 
     <div class="notice" id="email-notice">
-      Your appointment has been reserved. Please check your email for
-      any confirmation message. Payment is not processed by this page.
+      Your appointment request has been reserved. It is not confirmed until Simmons Performance Training approves it and verifies payment.
     </div>
+
+    <section class="details" id="zelle-instructions" aria-labelledby="zelle-heading" hidden>
+      <h2 id="zelle-heading">Pay with Zelle</h2>
+      <p>Send the exact amount below. Your appointment remains pending until the request is approved and payment is verified.</p>
+      <div class="detail"><span>Recipient</span><span id="zelle-recipient">Kaleb Simmons</span></div>
+      <div class="detail"><span>Zelle phone</span><span><span id="zelle-phone">480-504-9992</span> <button type="button" id="copy-zelle-phone">Copy number</button></span></div>
+      <div class="detail"><span>Amount due</span><span id="zelle-amount">Loading</span></div>
+      <div class="detail"><span>Payment note</span><span id="zelle-note">Athlete name and service</span></div>
+      <p id="zelle-copy-status" role="status" aria-live="polite"></p>
+    </section>
 
     <a href="index.html">Return to Website</a>
   </main>
@@ -172,7 +181,19 @@
 
         document.getElementById('email-notice').textContent =
           booking.emailNotice ||
-          'Your appointment is reserved. Contact simmonsperftraining@gmail.com if you need assistance.';
+          'Your appointment request is reserved. It is not confirmed until Simmons Performance Training approves it and verifies payment.';
+
+        const zelle = booking.paymentInstructions;
+        const zellePanel = document.getElementById('zelle-instructions');
+        if (zelle && /zelle/i.test(booking.paymentMethod || '')) {
+          zellePanel.hidden = false;
+          document.getElementById('zelle-recipient').textContent = zelle.recipient || 'Kaleb Simmons';
+          document.getElementById('zelle-phone').textContent = zelle.phone || '480-504-9992';
+          document.getElementById('zelle-amount').textContent = zelle.amount || booking.price || 'See service price above';
+          document.getElementById('zelle-note').textContent = zelle.note || booking.athleteName || 'Athlete name and service';
+        } else {
+          zellePanel.hidden = true;
+        }
       } else {
         document.getElementById('booking-id').textContent =
           'Confirmation details unavailable';
@@ -187,6 +208,17 @@
       document.getElementById('email-notice').textContent =
         'Please contact simmonsperftraining@gmail.com to verify your appointment.';
     }
+
+    document.getElementById('copy-zelle-phone')?.addEventListener('click', async () => {
+      const phone = document.getElementById('zelle-phone').textContent.trim();
+      const status = document.getElementById('zelle-copy-status');
+      try {
+        await navigator.clipboard.writeText(phone);
+        status.textContent = 'Zelle phone number copied.';
+      } catch {
+        status.textContent = 'Please select and copy the phone number manually.';
+      }
+    });
   </script>
 </body>
 </html>
