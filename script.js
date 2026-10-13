@@ -766,7 +766,7 @@ document.querySelectorAll('[data-purchase-trigger]').forEach((trigger) => {
       'General Fitness Programs': 'general-fitness-programs',
       'Training + Nutrition Bundles': 'training-nutrition-bundles'
     };
-    const productId = detailProductIds[card?.id] || cardProductIds[name];
+    const productId = card?.dataset.productId || detailProductIds[card?.id] || cardProductIds[name];
     if (!productId) {
       purchaseNotificationStatus.textContent =
         'This item is not connected to the secure order catalog yet.';
