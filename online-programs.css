@@ -308,6 +308,59 @@
 @media (max-width: 520px) {
   .product-cover { height: 155px; }
 }
+/* Fallback covers: also style any older cached nutrition-card markup */
+.online-category[data-product-id="athlete-nutrition-guide"] .product-placeholder,
+.online-category[data-product-id="muscle-building-nutrition-guide"] .product-placeholder,
+.online-category[data-product-id="fat-loss-nutrition-guide"] .product-placeholder,
+.online-category[data-product-id="meal-prep-grocery-guide"] .product-placeholder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: 175px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 15px 17px;
+  border: 1px solid #242424;
+  background: linear-gradient(118deg, #111 0%, #202a30 58%, #394d55 100%);
+  color: white;
+  text-align: left;
+}
+.online-category[data-product-id="athlete-nutrition-guide"] .product-placeholder::before,
+.online-category[data-product-id="muscle-building-nutrition-guide"] .product-placeholder::before,
+.online-category[data-product-id="fat-loss-nutrition-guide"] .product-placeholder::before,
+.online-category[data-product-id="meal-prep-grocery-guide"] .product-placeholder::before {
+  content: "SIMMONS PERFORMANCE  /  DIGITAL GUIDE";
+  display: block;
+  color: rgba(255,255,255,.72);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .17em;
+}
+.online-category[data-product-id="athlete-nutrition-guide"] .product-placeholder::after,
+.online-category[data-product-id="muscle-building-nutrition-guide"] .product-placeholder::after,
+.online-category[data-product-id="fat-loss-nutrition-guide"] .product-placeholder::after,
+.online-category[data-product-id="meal-prep-grocery-guide"] .product-placeholder::after {
+  content: "FUEL  /  PERFORM";
+  display: block;
+  color: #fff;
+  font-family: var(--display);
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -.02em;
+  text-align: left;
+}
+.online-category[data-product-id="athlete-nutrition-guide"] .product-placeholder span,
+.online-category[data-product-id="muscle-building-nutrition-guide"] .product-placeholder span,
+.online-category[data-product-id="fat-loss-nutrition-guide"] .product-placeholder span,
+.online-category[data-product-id="meal-prep-grocery-guide"] .product-placeholder span { display: none; }
+.online-category[data-product-id="muscle-building-nutrition-guide"] .product-placeholder { background: linear-gradient(118deg, #111 0%, #30201d 58%, #62332b 100%); }
+.online-category[data-product-id="muscle-building-nutrition-guide"] .product-placeholder::after { content: "BUILD / STRONG"; color: #e85b3f; }
+.online-category[data-product-id="fat-loss-nutrition-guide"] .product-placeholder { background: linear-gradient(118deg, #111 0%, #252a25 58%, #435744 100%); }
+.online-category[data-product-id="fat-loss-nutrition-guide"] .product-placeholder::after { content: "SMART / HABITS"; color: #a6c8a1; }
+.online-category[data-product-id="meal-prep-grocery-guide"] .product-placeholder { background: linear-gradient(118deg, #111 0%, #28241c 58%, #665437 100%); }
+.online-category[data-product-id="meal-prep-grocery-guide"] .product-placeholder::after { content: "PLAN / PREP"; color: #e0bf7d; }
 .product-placeholder {
   align-items: center;
   background: repeating-linear-gradient(135deg, #e2e3e4 0, #e2e3e4 1px, #f2f3f3 1px, #f2f3f3 9px);
