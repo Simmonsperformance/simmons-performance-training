@@ -232,6 +232,82 @@
   text-transform: uppercase;
 }
 
+/* Branded digital-guide cover art */
+.product-cover {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 175px;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 15px 17px;
+  color: #fff;
+  background: #171717;
+  border: 1px solid #242424;
+}
+.product-cover::before,
+.product-cover::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+.product-cover::before {
+  width: 175px;
+  height: 175px;
+  right: -42px;
+  top: 20px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 50%;
+  box-shadow: 0 0 0 16px rgba(255,255,255,.035), 0 0 0 34px rgba(255,255,255,.025);
+}
+.product-cover::after {
+  width: 4px;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background: #e30613;
+}
+.cover-mark,
+.cover-footer {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .19em;
+}
+.cover-mark { color: rgba(255,255,255,.7); }
+.cover-footer { color: rgba(255,255,255,.72); }
+.cover-art {
+  display: block;
+  align-self: flex-start;
+  font-family: var(--display);
+  font-size: clamp(31px, 4vw, 43px);
+  line-height: .78;
+  letter-spacing: -.025em;
+  transform: skewX(-5deg);
+}
+.cover-art b { color: #e30613; font-weight: 400; }
+.product-cover-athlete { background: linear-gradient(118deg, #111 0%, #202a30 58%, #394d55 100%); }
+.product-cover-muscle { background: linear-gradient(118deg, #111 0%, #30201d 58%, #62332b 100%); }
+.product-cover-fatloss { background: linear-gradient(118deg, #111 0%, #252a25 58%, #435744 100%); }
+.product-cover-mealprep { background: linear-gradient(118deg, #111 0%, #28241c 58%, #665437 100%); }
+.product-cover-muscle::after { background: #e85b3f; }
+.product-cover-fatloss::after { background: #92b58e; }
+.product-cover-mealprep::after { background: #d7b16a; }
+.product-cover-muscle .cover-art b { color: #e85b3f; }
+.product-cover-fatloss .cover-art b { color: #a6c8a1; }
+.product-cover-mealprep .cover-art b { color: #e0bf7d; }
+.product-cover-mealprep::before {
+  width: 118px;
+  height: 118px;
+  border-radius: 18px;
+  transform: rotate(25deg);
+  right: -15px;
+  top: 30px;
+}
+@media (max-width: 520px) {
+  .product-cover { height: 155px; }
+}
 .product-placeholder {
   align-items: center;
   background: repeating-linear-gradient(135deg, #e2e3e4 0, #e2e3e4 1px, #f2f3f3 1px, #f2f3f3 9px);
