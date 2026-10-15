@@ -532,6 +532,10 @@ bookingForm?.addEventListener('submit', async (event) => {
     formData.get('parentPhone') || ''
   ).trim();
 
+  const athletePhone = String(
+    formData.get('athletePhone') || ''
+  ).trim();
+
   const athleteEmail = enteredAthleteEmail || parentEmail;
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -555,6 +559,14 @@ bookingForm?.addEventListener('submit', async (event) => {
       'Please enter a valid parent/guardian email address, or leave it blank.';
 
     bookingForm.elements.parentEmail?.focus();
+    return;
+  }
+
+  if (!athletePhone && !parentPhone) {
+    bookingStatus.textContent =
+      'Please enter a phone number for either the athlete or parent/guardian.';
+
+    bookingForm.elements.athletePhone?.focus();
     return;
   }
 
@@ -582,6 +594,7 @@ bookingForm?.addEventListener('submit', async (event) => {
       athlete_email: athleteEmail,
       guardian_name: parentName,
       guardian_email: parentEmail,
+      athlete_phone: athletePhone,
       guardian_phone: parentPhone,
       training_goals: String(formData.get('goals') || '').trim(),
 
