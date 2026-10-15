@@ -472,13 +472,14 @@
             </div>
           </section>
           <section class="booking-modal-section">
-            <h3>Parent / guardian information</h3>
-            <label>Parent / guardian full name<input type="text" name="parentName" autocomplete="name" required /></label>
+            <h3>Parent / guardian information <span class="optional-label">(optional for athletes 18+)</span></h3>
+            <p class="field-hint">Athletes who are 18 or older can complete the form using their own contact information. Parents or guardians may provide their details when booking for a minor.</p>
+            <label>Parent / guardian full name (optional)<input type="text" name="parentName" autocomplete="name" /></label>
             <div class="booking-field-row">
-              <label>Parent / guardian email<input type="email" name="parentEmail" autocomplete="email" required /></label>
-              <label>Parent / guardian phone<input type="tel" name="parentPhone" autocomplete="tel" required /></label>
+              <label>Parent / guardian email (optional)<input type="email" name="parentEmail" autocomplete="email" /></label>
+              <label>Parent / guardian phone (optional)<input type="tel" name="parentPhone" autocomplete="tel" /></label>
             </div>
-            <label>Athlete email (optional if parent/guardian email is provided)<input type="email" name="athleteEmail" autocomplete="email" placeholder="Only enter if different from parent/guardian email" /><small class="field-hint">If the athlete has no separate email, the parent/guardian email will be used.</small></label>
+            <label>Athlete email<input type="email" name="athleteEmail" autocomplete="email" placeholder="Athlete’s own email address" required /><small class="field-hint">Required for booking updates. If booking for a minor, you may use the parent/guardian email instead.</small></label>
           </section>
           <section class="booking-modal-section">
             <h3>Training information</h3>
