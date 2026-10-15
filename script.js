@@ -596,6 +596,12 @@ bookingForm?.addEventListener('submit', async (event) => {
   bookingStatus.textContent =
     'Checking availability and reserving your appointment…';
 
+  // Once Supabase returns a booking ID, never treat a later confirmation-page
+  // or browser-storage issue as a failed reservation. That would refresh the
+  // calendar and make the already-reserved time disappear from this page.
+  let reservationCreated = false;
+  let createdBookingId = '';
+
   try {
     // FIRST: reserve the actual appointment through Supabase.
     const result = await callBookingApi({
@@ -627,6 +633,9 @@ bookingForm?.addEventListener('submit', async (event) => {
         'The booking service did not return a booking confirmation.'
       );
     }
+
+    reservationCreated = true;
+    createdBookingId = String(result.booking_id);
 
     const confirmationMessage =
       'Your appointment is reserved. Contact simmonsperftraining@gmail.com if you need to make a change.';
@@ -692,7 +701,38 @@ sessionStorage.setItem(
     window.location.assign('booking-confirmation.html');
 
   } catch (error) {
-    console.error('Appointment reservation failed:', error);
+    console.error('Appointment reservation flow issue:', error);
+
+    // If the server already created the booking, keep the customer moving to
+    // the confirmation page instead of reloading availability and losing the
+    // selected time. A booking ID is the authoritative success signal.
+    if (reservationCreated && createdBookingId) {
+      const confirmationUrl = new URL('booking-confirmation.html', window.location.href);
+      try {
+        const saved = JSON.parse(
+          sessionStorage.getItem('sptBookingConfirmation') ||
+          localStorage.getItem('sptBookingConfirmation') ||
+          '{}'
+        );
+        saved.bookingId = createdBookingId;
+        saved.service = service;
+        saved.price = String(formData.get('price') || '');
+        saved.date = appointmentDate;
+        saved.athleteName = athleteName;
+        saved.parentName = parentName;
+        saved.parentEmail = parentEmail;
+        saved.athleteEmail = athleteEmail;
+        saved.paymentMethod = String(formData.get('paymentMethod') || '');
+        saved.emailNotice = 'Your request was saved. The business will review it shortly.';
+        saved.confirmedAt = new Date().toISOString();
+        localStorage.setItem('sptBookingConfirmation', JSON.stringify(saved));
+        sessionStorage.setItem('sptBookingConfirmation', JSON.stringify(saved));
+      } catch (storageError) {
+        console.warn('Could not refresh confirmation details:', storageError);
+      }
+      window.location.href = confirmationUrl.href;
+      return;
+    }
 
     bookingStatus.textContent =
       `We could not reserve this appointment: ${
