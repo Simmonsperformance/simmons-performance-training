@@ -479,7 +479,9 @@
               <label>Parent / guardian email (optional)<input type="email" name="parentEmail" autocomplete="email" /></label>
               <label>Parent / guardian phone (optional)<input type="tel" name="parentPhone" autocomplete="tel" /></label>
             </div>
+            <label>Athlete phone (optional if parent / guardian phone is provided)<input type="tel" name="athletePhone" autocomplete="tel" /></label>
             <label>Athlete email<input type="email" name="athleteEmail" autocomplete="email" placeholder="Athlete’s own email address" required /><small class="field-hint">Required for booking updates. If booking for a minor, you may use the parent/guardian email instead.</small></label>
+            <p class="field-hint">Provide at least one phone number: athlete or parent / guardian. You do not need to provide both.</p>
           </section>
           <section class="booking-modal-section">
             <h3>Training information</h3>
@@ -646,6 +648,6 @@
   <script src="email-config.js"></script>
   <script src="order-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261015-bookingfix1"></script>
+  <script src="script.js?v=20261015-phoneeither1"></script>
 </body>
 </html>
