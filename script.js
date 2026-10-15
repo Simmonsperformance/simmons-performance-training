@@ -546,6 +546,21 @@ bookingForm?.addEventListener('submit', async (event) => {
     return;
   }
 
+  const athleteAge = Number(formData.get('athleteAge'));
+  if (athleteAge < 18 && !parentName) {
+    bookingStatus.textContent =
+      'For athletes under 18, please enter the parent/guardian full name. The phone number can be entered for either the athlete or parent/guardian.';
+    bookingForm.elements.parentName?.focus();
+    return;
+  }
+
+  if (athleteAge < 18 && !parentEmail) {
+    bookingStatus.textContent =
+      'For athletes under 18, please enter the parent/guardian email. The phone number can be entered for either the athlete or parent/guardian.';
+    bookingForm.elements.parentEmail?.focus();
+    return;
+  }
+
   if (!athleteEmail || !emailPattern.test(athleteEmail)) {
     bookingStatus.textContent =
       'Please enter a valid athlete or parent/guardian email address.';
@@ -588,7 +603,7 @@ bookingForm?.addEventListener('submit', async (event) => {
       slot_id: slotId,
       service_key: serviceKey,
       athlete_name: athleteName,
-      athlete_age: Number(formData.get('athleteAge')),
+      athlete_age: athleteAge,
       sport: String(formData.get('sport') || '').trim(),
       position: String(formData.get('position') || '').trim(),
       athlete_email: athleteEmail,
