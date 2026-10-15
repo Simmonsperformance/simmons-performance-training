@@ -677,8 +677,17 @@ sessionStorage.setItem(
     bookingSubmit.innerHTML =
       'CONFIRM APPOINTMENT <span>↗</span>';
 
-    // Refresh the times in case another person booked the slot.
+    // Refresh availability, but keep the customer's selection if the slot
+    // is still open. A validation or network error should not erase their work.
+    const previouslySelectedSlotId = slotId;
     await loadAvailability();
+    const stillAvailableIndex = availableSlots.findIndex(
+      (availableSlot) => getSlotId(availableSlot) === previouslySelectedSlotId
+    );
+    if (stillAvailableIndex >= 0 && bookingTime) {
+      bookingTime.value = String(stillAvailableIndex);
+      updateBookingReview();
+    }
   }
 });
 
