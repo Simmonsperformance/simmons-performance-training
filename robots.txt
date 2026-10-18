@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin-appointments.html
+Disallow: /admin-orders.html
+Disallow: /booking-confirmation.html
+
+Sitemap: https://simmonsperformance.github.io/simmons-performance-training/sitemap.xml
