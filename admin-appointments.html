@@ -166,10 +166,10 @@
     card.appendChild(make("h3", booking.athlete_name || "Appointment request"));
     addField(card, "Booking ID", booking.id);
     const serviceLabels = {
-      "one-on-one": "1-on-1 Session — $75 / session",
+      "one-on-one": "1-on-1 Session — $65 / session",
       "group-speed": "Group Speed Training — $55 / athlete",
       "three-times-weekly": "3x Weekly Package — $195 / week",
-      "house-call": "House Call Session — $100 / session"
+      "house-call": "House Call Session — $85 / session"
     };
     addField(card, "Service / Price", serviceLabels[booking.service_key] || booking.service_key);
     addField(card, "Date", formatDate(slot?.starts_at));
