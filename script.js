@@ -384,7 +384,10 @@ const openBookingModal = (service = '', price = '') => {
   bookingSelectedPrice.textContent = price;
 
   const isHouseCall = service === 'House Call Session';
-  if (houseCallAddressField) houseCallAddressField.hidden = !isHouseCall;
+  if (houseCallAddressField) {
+    houseCallAddressField.hidden = !isHouseCall;
+    houseCallAddressField.style.display = isHouseCall ? '' : 'none';
+  }
   if (houseCallAddressInput) {
     houseCallAddressInput.required = isHouseCall;
     houseCallAddressInput.value = '';
