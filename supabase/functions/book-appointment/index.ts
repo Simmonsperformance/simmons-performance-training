@@ -255,10 +255,10 @@ Deno.serve(async (req: Request) => {
     const requestTemplateId = Deno.env.get("APPOINTMENT_REQUEST_TEMPLATE_ID") ||
       Deno.env.get("EMAILJS_APPOINTMENT_REQUEST_TEMPLATE_ID");
     const serviceDetails: Record<string, { name: string; price: string }> = {
-      "one-on-one": { name: "1-on-1 Session", price: "$75 / session" },
+      "one-on-one": { name: "1-on-1 Session", price: "$65 / session" },
       "group-speed": { name: "Group Speed Training", price: "$55 / athlete" },
       "three-times-weekly": { name: "3x Weekly Package", price: "$195 / week" },
-      "house-call": { name: "House Call Session", price: "$100 / session" },
+      "house-call": { name: "House Call Session", price: "$85 / session" },
     };
     let notificationEmail = "not_configured";
     if (requestTemplateId) {
