@@ -33,6 +33,8 @@ const bookingServiceField = document.querySelector('#booking-service');
 const bookingPriceField = document.querySelector('#booking-price');
 const bookingSelectedService = document.querySelector('#booking-selected-service');
 const bookingSelectedPrice = document.querySelector('#booking-selected-price');
+const houseCallAddressField = document.querySelector('#house-call-address-field');
+const houseCallAddressInput = document.querySelector('#house-call-address');
 const bookingCalendarDays = document.querySelector('#booking-calendar-days');
 const bookingCalendarHeading = document.querySelector('#booking-calendar-heading');
 const bookingMonthPrevious = document.querySelector('#booking-month-previous');
@@ -381,6 +383,13 @@ const openBookingModal = (service = '', price = '') => {
   bookingSelectedService.textContent = service;
   bookingSelectedPrice.textContent = price;
 
+  const isHouseCall = service === 'House Call Session';
+  if (houseCallAddressField) houseCallAddressField.hidden = !isHouseCall;
+  if (houseCallAddressInput) {
+    houseCallAddressInput.required = isHouseCall;
+    houseCallAddressInput.value = '';
+  }
+
   if (service === '3x Weekly Package') {
     bookingStatus.textContent =
       'The 3x Weekly Package requires three separate appointments. ' +
@@ -516,6 +525,13 @@ bookingForm?.addEventListener('submit', async (event) => {
     formData.get('athleteName') || ''
   ).trim();
 
+  const houseCallAddress = String(formData.get('houseCallAddress') || '').trim();
+  if (serviceKey === 'house-call' && !houseCallAddress) {
+    bookingStatus.textContent = 'Please enter the full address for the house-call appointment.';
+    houseCallAddressInput?.focus();
+    return;
+  }
+
   const enteredAthleteEmail = String(
     formData.get('athleteEmail') || ''
   ).trim();
@@ -624,7 +640,8 @@ bookingForm?.addEventListener('submit', async (event) => {
         `Fitness: ${formData.get('fitness') || 'Not provided'}`,
         `Injury history: ${formData.get('injuryHistory') || 'Not provided'}`,
         `Payment method: ${formData.get('paymentMethod') || 'Not selected'}`,
-        `Additional notes: ${formData.get('notes') || 'None'}`
+        `Additional notes: ${formData.get('notes') || 'None'}`,
+        ...(serviceKey === 'house-call' ? [`House-call address: ${houseCallAddress}`] : [])
       ].join('\n')
     });
 
