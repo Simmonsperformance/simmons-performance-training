@@ -333,7 +333,7 @@
         <div class="pricing-grid">
           <article class="price-card">
             <div class="price-top"><span>01 / Individual</span><span class="price-tag">Most flexible</span></div>
-            <h3>1-on-1<br />Session</h3><div class="price"><sup>$</sup>75 <small>/ session</small></div><p>1 hour 30 minutes of focused, individualized performance training.</p><ul><li>Personalized training plan</li><li>Speed, agility & strength work</li><li>Coach-led progress tracking</li></ul><div class="price-card-actions"><button type="button" class="button button-booking" data-booking-open data-service="1-on-1 Session" data-price="$75 / session">BOOK AN APPOINTMENT</button></div>
+            <h3>1-on-1<br />Session</h3><div class="price"><sup>$</sup>65 <small>/ session</small></div><p>1 hour 30 minutes of focused, individualized performance training.</p><ul><li>Personalized training plan</li><li>Speed, agility & strength work</li><li>Coach-led progress tracking</li></ul><div class="price-card-actions"><button type="button" class="button button-booking" data-booking-open data-service="1-on-1 Session" data-price="$65 / session">BOOK AN APPOINTMENT</button></div>
           </article>
           <article class="price-card price-card-highlight">
             <div class="price-top"><span>02 / Small group</span><span class="price-tag">High energy</span></div>
@@ -345,7 +345,7 @@
           </article>
             <article class="price-card price-card-highlight">
               <div class="price-top"><span>04 / On location</span><span class="price-tag">We come to you</span></div>
-              <h3>House Call<br />Session</h3><div class="price"><sup>$</sup>100 <small>/ session</small></div><p>1 hour 30 minutes of high-level training at your home or preferred location.</p><ul><li>On-location coaching</li><li>Custom speed & agility work</li><li>Bring the work to you</li></ul><div class="price-card-actions"><button type="button" class="button button-booking" data-booking-open data-service="House Call Session" data-price="$100 / session">BOOK AN APPOINTMENT</button></div>
+              <h3>House Call<br />Session</h3><div class="price"><sup>$</sup>85 <small>/ session</small></div><p>1 hour 30 minutes of high-level training at your home or preferred location.</p><ul><li>On-location coaching</li><li>Custom speed & agility work</li><li>Bring the work to you</li></ul><div class="price-card-actions"><button type="button" class="button button-booking" data-booking-open data-service="House Call Session" data-price="$85 / session">BOOK AN APPOINTMENT</button></div>
             </article>
         </div>
       </div>
@@ -450,6 +450,10 @@
               <span>Selected service</span><strong id="booking-selected-service"></strong>
               <span>Price</span><strong id="booking-selected-price"></strong>
             </div>
+            <label id="house-call-address-field" hidden>House-call address <span class="required-indicator">*</span>
+              <input type="text" name="houseCallAddress" id="house-call-address" autocomplete="street-address" placeholder="Street address, unit, city, state, ZIP code" maxlength="300" />
+              <small class="field-hint">Required for house-call appointments so the coach knows where to go.</small>
+            </label>
             <div class="booking-calendar" aria-labelledby="booking-calendar-heading">
               <div class="booking-calendar-header"><button type="button" id="booking-month-previous" aria-label="Previous month">←</button><h4 id="booking-calendar-heading"></h4><button type="button" id="booking-month-next" aria-label="Next month">→</button></div>
               <div class="booking-calendar-weekdays" aria-hidden="true"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div>
@@ -656,6 +660,6 @@
   <script src="email-config.js"></script>
   <script src="order-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261015-phoneeither2"></script>
+  <script src="script.js?v=20261019-housecall-address-prices"></script>
 </body>
 </html>
