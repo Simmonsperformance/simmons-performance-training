@@ -396,28 +396,10 @@
           <h3 class="program-category-title">NUTRITION GUIDES</h3>
           <div class="online-category-grid online-category-grid-expanded">
             <article class="online-category" data-product-id="athlete-nutrition-guide">
-              <div class="category-top"><span>01 / Athlete fueling</span><span class="category-arrow">↗</span></div>
-              <h3>Athlete<br />Nutrition Guide</h3>
-              <div class="product-cover product-cover-athlete" role="img" aria-label="Athlete nutrition guide cover artwork"><span class="cover-mark">SPT / 01</span><span class="cover-art cover-art-athlete" aria-hidden="true">FUEL<br /><b>PERFORM</b></span><span class="cover-footer">PERFORMANCE NUTRITION</span></div>
-              <div class="product-details"><span class="placeholder-label">SIMMONS PERFORMANCE ATHLETE NUTRITION GUIDE</span><p>Learn the fundamentals of fueling training, recovery, practices, and competition.</p><p class="included-placeholder">What's included: fueling basics, hydration, meal timing, and practical food ideas.</p><div class="product-meta"><span>$30</span><span>Digital PDF</span></div><div class="product-actions"><button type="button" class="program-placeholder-button" data-purchase-trigger>BUY NOW</button></div></div>
-            </article>
-            <article class="online-category" data-product-id="muscle-building-nutrition-guide">
-              <div class="category-top"><span>02 / Muscle building</span><span class="category-arrow">↗</span></div>
-              <h3>Muscle-Building<br />Nutrition Guide</h3>
-              <div class="product-cover product-cover-muscle" role="img" aria-label="Muscle-building nutrition guide cover artwork"><span class="cover-mark">SPT / 02</span><span class="cover-art cover-art-muscle" aria-hidden="true">BUILD<br /><b>STRONG</b></span><span class="cover-footer">MUSCLE &amp; FUEL</span></div>
-              <div class="product-details"><span class="placeholder-label">SIMMONS PERFORMANCE MUSCLE-BUILDING NUTRITION GUIDE</span><p>Build consistent eating habits that support resistance training and muscle development.</p><p class="included-placeholder">What's included: protein and calorie basics, meal ideas, grocery list, and meal prep.</p><div class="product-meta"><span>$30</span><span>Digital PDF</span></div><div class="product-actions"><button type="button" class="program-placeholder-button" data-purchase-trigger>BUY NOW</button></div></div>
-            </article>
-            <article class="online-category" data-product-id="fat-loss-nutrition-guide">
-              <div class="category-top"><span>03 / Sustainable habits</span><span class="category-arrow">↗</span></div>
-              <h3>Fat-Loss<br />Nutrition Guide</h3>
-              <div class="product-cover product-cover-fatloss" role="img" aria-label="Fat-loss nutrition guide cover artwork"><span class="cover-mark">SPT / 03</span><span class="cover-art cover-art-fatloss" aria-hidden="true">SMART<br /><b>HABITS</b></span><span class="cover-footer">SUSTAINABLE NUTRITION</span></div>
-              <div class="product-details"><span class="placeholder-label">SIMMONS PERFORMANCE FAT-LOSS NUTRITION GUIDE</span><p>Practical nutrition education focused on food quality, portions, and sustainable habits.</p><p class="included-placeholder">What's included: meal ideas, grocery guidance, meal prep, and progress tracking.</p><div class="product-meta"><span>$30</span><span>Digital PDF</span></div><div class="product-actions"><button type="button" class="program-placeholder-button" data-purchase-trigger>BUY NOW</button></div></div>
-            </article>
-            <article class="online-category" data-product-id="meal-prep-grocery-guide">
-              <div class="category-top"><span>04 / Planning</span><span class="category-arrow">↗</span></div>
-              <h3>Meal Prep &amp;<br />Grocery Guide</h3>
-              <div class="product-cover product-cover-mealprep" role="img" aria-label="Meal prep and grocery guide cover artwork"><span class="cover-mark">SPT / 04</span><span class="cover-art cover-art-mealprep" aria-hidden="true">PLAN<br /><b>PREP</b></span><span class="cover-footer">MEAL PREP &amp; GROCERY</span></div>
-              <div class="product-details"><span class="placeholder-label">SIMMONS PERFORMANCE MEAL PREP &amp; GROCERY GUIDE</span><p>Make meal planning, grocery shopping, and weekly preparation more consistent.</p><p class="included-placeholder">What's included: meal-prep structure, grocery lists, storage tips, and food options.</p><div class="product-meta"><span>$30</span><span>Digital PDF</span></div><div class="product-actions"><button type="button" class="program-placeholder-button" data-purchase-trigger>BUY NOW</button></div></div>
+              <div class="category-top"><span>01 / Personalized fueling</span><span class="category-arrow">↗</span></div>
+              <h3>Personalized<br />Athlete Nutrition Guide</h3>
+              <div class="product-cover product-cover-athlete" role="img" aria-label="Personalized athlete nutrition guide cover artwork"><span class="cover-mark">SPT / 01</span><span class="cover-art cover-art-athlete" aria-hidden="true">FUEL<br /><b>PERFORM</b></span><span class="cover-footer">PERSONALIZED PERFORMANCE NUTRITION</span></div>
+              <div class="product-details"><span class="placeholder-label">SIMMONS PERFORMANCE PERSONALIZED ATHLETE NUTRITION GUIDE</span><p>A nutrition guide tailored to your goals, sport, training schedule, food preferences, and intake responses.</p><p class="included-placeholder">Complete the athlete intake form at checkout. After payment is verified, your personalized PDF is prepared and emailed to you by the coach.</p><div class="product-meta"><span>$30</span><span>Personalized PDF</span></div><div class="product-actions"><button type="button" class="program-placeholder-button" data-purchase-trigger>START INTAKE &amp; ORDER</button></div></div>
             </article>
           </div>
         </div>
@@ -615,6 +597,36 @@
             <label>Notes / message<textarea name="customerNotes" rows="3" placeholder="Optional details for your purchase"></textarea></label>
           </div>
         </section>
+        <fieldset class="nutrition-intake" id="nutrition-intake" hidden>
+          <legend>Athlete nutrition intake</legend>
+          <p class="nutrition-intake-intro">Please complete this form so your guide can be tailored to you. Required fields are marked. Share only information relevant to nutrition planning.</p>
+          <div class="nutrition-intake-grid">
+            <label>Age <span class="intake-required">*</span><input type="number" name="nutritionAge" min="8" max="100" inputmode="numeric" /></label>
+            <label>Primary goal <span class="intake-required">*</span><select name="nutritionGoal"><option value="">Choose your goal</option><option>Build muscle / gain weight</option><option>Lose body fat</option><option>Improve sports performance</option><option>Fuel practices and games</option><option>Improve recovery</option><option>Maintain weight / healthy habits</option><option>Other / multiple goals</option></select></label>
+            <label>Sport and position / event <span class="intake-required">*</span><input type="text" name="nutritionSport" maxlength="150" placeholder="e.g. football — linebacker" /></label>
+            <label>Height <span class="intake-required">*</span><input type="text" name="nutritionHeight" maxlength="40" placeholder="e.g. 5 ft 10 in or 178 cm" /></label>
+            <label>Current weight <span class="intake-required">*</span><input type="text" name="nutritionWeight" maxlength="40" placeholder="Include lb or kg" /></label>
+            <label>Target weight (if any)<input type="text" name="nutritionTargetWeight" maxlength="40" placeholder="Optional" /></label>
+            <label>Training days per week <span class="intake-required">*</span><select name="nutritionTrainingDays"><option value="">Select</option><option>1–2</option><option>3–4</option><option>5–6</option><option>7</option><option>Varies by season</option></select></label>
+            <label>Typical training / practice times<input type="text" name="nutritionTrainingTimes" maxlength="180" placeholder="e.g. school practice at 3 PM, lifting at 5 PM" /></label>
+            <label>Daily activity outside training<select name="nutritionActivity"><option value="">Select</option><option>Mostly sitting / school or desk</option><option>Some walking</option><option>Active most of the day</option><option>Very active physical work</option></select></label>
+            <label>Food allergies or intolerances<textarea name="nutritionAllergies" rows="2" maxlength="500" placeholder="Include any serious food allergies; write “none” if none"></textarea></label>
+            <label>Dietary needs, restrictions, or cultural food preferences<textarea name="nutritionDietaryNeeds" rows="2" maxlength="500" placeholder="e.g. vegetarian, lactose-free, foods you avoid"></textarea></label>
+            <label>Favorite foods and foods you dislike<textarea name="nutritionFoodPreferences" rows="2" maxlength="500"></textarea></label>
+            <label>Typical meals and snacks<textarea name="nutritionTypicalMeals" rows="3" maxlength="700" placeholder="What you usually eat on a school/work day and training day"></textarea></label>
+            <label>Hydration habits<textarea name="nutritionHydration" rows="2" maxlength="300" placeholder="Water / sports drinks and approximate amount"></textarea></label>
+            <label>Sleep and recovery<textarea name="nutritionSleep" rows="2" maxlength="300" placeholder="Typical hours of sleep and recovery concerns"></textarea></label>
+            <label>Supplements currently used<textarea name="nutritionSupplements" rows="2" maxlength="400" placeholder="Name and amount if known; write “none” if none"></textarea></label>
+            <label>Medical conditions, medications, or clinician-provided nutrition restrictions<textarea name="nutritionMedical" rows="3" maxlength="700" placeholder="Optional. Include only what you feel is necessary for safe nutrition planning."></textarea></label>
+            <label>Race / ethnicity (optional)<input type="text" name="nutritionRace" maxlength="150" placeholder="Optional — skip if you prefer" /><small>Optional. This will not be used to assume your nutritional needs.</small></label>
+            <label>Food budget and cooking access<textarea name="nutritionBudget" rows="2" maxlength="350" placeholder="e.g. grocery budget, access to a kitchen, school meals"></textarea></label>
+            <label>Anything else that affects your nutrition goals<textarea name="nutritionOther" rows="3" maxlength="600" placeholder="Schedule, appetite, travel, season, access to food, or other relevant context"></textarea></label>
+          </div>
+          <div class="nutrition-intake-consent">
+            <label class="nutrition-consent-check"><input type="checkbox" name="nutritionAcknowledgement" value="yes" /> I understand this is general sports-nutrition education, not medical care. I will consult a qualified healthcare professional for medical conditions, eating-disorder concerns, or prescribed diets. <span class="intake-required">*</span></label>
+            <label class="nutrition-consent-check"><input type="checkbox" name="nutritionGuardianConsent" value="yes" /> If the athlete is under 18, a parent or legal guardian is aware of and approves this intake and purchase.</label>
+          </div>
+        </fieldset>
         <fieldset class="payment-method-picker" id="payment-method-picker">
           <legend>Payment method</legend>
           <label><input type="radio" name="paymentMethod" value="zelle" checked /><span>Zelle</span></label>
@@ -660,6 +672,6 @@
   <script src="email-config.js"></script>
   <script src="order-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js?v=20261019-housecall-visibility-fix"></script>
+  <script src="script.js?v=20261020-personalized-nutrition-intake"></script>
 </body>
 </html>
