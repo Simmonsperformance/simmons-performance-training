@@ -116,7 +116,7 @@ Deno.serve(async (request) => {
     .maybeSingle();
 
   const storagePath = storagePathResult.data?.storage_path;
-  if (storagePathResult.error || !storagePathResult.data?.orderable || !storagePath) {
+  if (storagePathResult.error || !storagePath) {
     const message = 'The paid product has no configured private delivery file.';
     await supabase.rpc('finish_digital_order_delivery', {
       p_order_id: orderId,
