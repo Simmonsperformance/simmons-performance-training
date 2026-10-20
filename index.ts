@@ -75,7 +75,7 @@ Deno.serve(async (request) => {
     !/^[a-z0-9-]{3,80}$/.test(productId) ||
     customerName.length < 2 || customerName.length > 120 ||
     !emailPattern.test(customerEmail) || customerEmail.length > 254 ||
-    customerPhone.length > 40 || notes.length > 2000 ||
+    customerPhone.length > 40 || notes.length > 10000 ||
     !['Zelle', 'In-Person / Cash'].includes(paymentMethod) ||
     !uuidPattern.test(idempotencyKey)
   ) {
