@@ -77,7 +77,7 @@ Deno.serve(async (request) => {
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(orderId)) {
     return json(400, { error: 'A valid order ID is required.' }, origin);
   }
-  if (!['confirm_payment', 'retry_delivery'].includes(action)) {
+  if (!['confirm_payment', 'retry_delivery', 'mark_manual_delivered'].includes(action)) {
     return json(400, { error: 'Unsupported order action.' }, origin);
   }
 
@@ -96,6 +96,17 @@ Deno.serve(async (request) => {
         ? 'This order is no longer pending payment, or delivery is already in progress.'
         : 'Only a paid order with a confirmed delivery failure can be retried.',
     }, origin);
+  }
+
+  if (action === 'mark_manual_delivered') {
+    if (order.product_id !== 'athlete-nutrition-guide' || order.payment_status !== 'paid' || order.delivery_status !== 'delivered') {
+      return json(409, { error: 'Only a paid personalized nutrition order can be marked delivered after manual fulfillment.' }, origin);
+    }
+    return json(200, { order_id: orderId, payment_status: 'paid', delivery_status: 'delivered', message: 'Manual fulfillment recorded.' }, origin);
+  }
+
+  if (action === 'confirm_payment' && order.product_id === 'athlete-nutrition-guide' && order.delivery_status === 'awaiting_manual') {
+    return json(200, { order_id: orderId, payment_status: 'paid', delivery_status: 'awaiting_manual', message: 'Payment verified. Prepare and email the personalized nutrition PDF manually.' }, origin);
   }
 
   const storagePathResult = await supabase
