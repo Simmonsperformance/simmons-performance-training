@@ -148,6 +148,7 @@
             const description = document.createElement('dd');
             term.textContent = label;
             description.textContent = value;
+            if (label === 'Notes') description.style.whiteSpace = 'pre-wrap';
             row.append(term, description);
             details.append(row);
           }
@@ -157,9 +158,15 @@
           if (order.payment_status === 'pending' && order.delivery_status === 'pending') {
             const confirm = document.createElement('button');
             confirm.className = 'primary';
-            confirm.textContent = 'Confirm payment and deliver';
+            confirm.textContent = order.product_id === 'athlete-nutrition-guide' ? 'Verify payment (personalized guide)' : 'Confirm payment and deliver';
             confirm.addEventListener('click', () => runAction(order.id, 'confirm_payment', 'Confirm only after verifying payment reached your account.'));
             actions.append(confirm);
+          } else if (order.payment_status === 'paid' && order.delivery_status === 'awaiting_manual' && order.product_id === 'athlete-nutrition-guide') {
+            const markSent = document.createElement('button');
+            markSent.className = 'primary';
+            markSent.textContent = 'Mark personalized guide emailed';
+            markSent.addEventListener('click', () => runAction(order.id, 'mark_manual_delivered', 'Only continue after you have emailed this athlete their personalized nutrition PDF or download link.'));
+            actions.append(markSent);
           } else if (order.payment_status === 'paid' && order.delivery_status === 'failed') {
             const retry = document.createElement('button');
             retry.className = 'primary';
