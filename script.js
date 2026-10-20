@@ -895,7 +895,7 @@ document.querySelectorAll('[data-purchase-trigger]').forEach((trigger) => {
       const isNutritionGuide = productId === 'athlete-nutrition-guide';
       nutritionIntake.hidden = !isNutritionGuide;
       nutritionIntake.querySelectorAll('input, select, textarea').forEach((field) => {
-        field.required = isNutritionGuide && ['nutritionAge','nutritionGoal','nutritionSport','nutritionHeight','nutritionWeight','nutritionTrainingDays','nutritionAcknowledgement'].includes(field.name);
+        field.required = isNutritionGuide && ['nutritionAthleteName','nutritionAthleteEmail','nutritionAthletePhone','nutritionAge','nutritionGoal','nutritionSport','nutritionHeight','nutritionWeight','nutritionTrainingDays','nutritionAcknowledgement'].includes(field.name);
       });
     }
 
@@ -988,14 +988,25 @@ purchaseNotificationForm?.addEventListener('submit', async (event) => {
   let customerNotes = String(formData.get('customerNotes') || '').trim();
   if (activePurchase.productId === 'athlete-nutrition-guide') {
     const age = Number(formData.get('nutritionAge'));
-    if (age < 18 && formData.get('nutritionGuardianConsent') !== 'yes') {
-      purchaseNotificationStatus.textContent = 'For athletes under 18, a parent or legal guardian must acknowledge and approve this intake.';
+    const guardianName = String(formData.get('nutritionGuardianName') || '').trim();
+    const guardianEmail = String(formData.get('nutritionGuardianEmail') || '').trim();
+    const athleteEmail = String(formData.get('nutritionAthleteEmail') || '').trim();
+    const emailLooksValid = (value) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);
+    if (!emailLooksValid(athleteEmail)) {
+      purchaseNotificationStatus.textContent = 'Enter a valid athlete email address for delivery of the personalized guide.';
+      purchaseModalConfirm.disabled = false;
+      updatePaymentMethod();
+      return;
+    }
+    if (age < 18 && (formData.get('nutritionGuardianConsent') !== 'yes' || !guardianName || !emailLooksValid(guardianEmail))) {
+      purchaseNotificationStatus.textContent = 'For athletes under 18, enter the parent or legal guardian name and email, and confirm their approval.';
       purchaseModalConfirm.disabled = false;
       updatePaymentMethod();
       return;
     }
     const intakeFields = [
-      ['Athlete age', 'nutritionAge'], ['Nutrition goal', 'nutritionGoal'], ['Sport / position / event', 'nutritionSport'],
+      ['Athlete full name', 'nutritionAthleteName'], ['Athlete email', 'nutritionAthleteEmail'], ['Athlete phone number', 'nutritionAthletePhone'],
+      ['Parent / legal guardian name', 'nutritionGuardianName'], ['Parent / legal guardian email', 'nutritionGuardianEmail'], ['Athlete age', 'nutritionAge'], ['Nutrition goal', 'nutritionGoal'], ['Sport / position / event', 'nutritionSport'],
       ['Height', 'nutritionHeight'], ['Current weight', 'nutritionWeight'], ['Target weight', 'nutritionTargetWeight'],
       ['Training days per week', 'nutritionTrainingDays'], ['Training / practice times', 'nutritionTrainingTimes'],
       ['Daily activity outside training', 'nutritionActivity'], ['Food allergies / intolerances', 'nutritionAllergies'],
