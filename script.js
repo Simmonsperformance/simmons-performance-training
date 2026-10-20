@@ -803,6 +803,7 @@ const paymentMethodInputs =
   document.querySelectorAll('input[name="paymentMethod"]');
 
 let activePurchase = null;
+const nutritionIntake = document.querySelector('#nutrition-intake');
 
 const formatCents = (amountCents, currency = 'USD') =>
   new Intl.NumberFormat('en-US', {
@@ -890,6 +891,13 @@ document.querySelectorAll('[data-purchase-trigger]').forEach((trigger) => {
     purchaseNotificationStatus.textContent = '';
 
     purchaseNotificationForm.reset();
+    if (nutritionIntake) {
+      const isNutritionGuide = productId === 'athlete-nutrition-guide';
+      nutritionIntake.hidden = !isNutritionGuide;
+      nutritionIntake.querySelectorAll('input, select, textarea').forEach((field) => {
+        field.required = isNutritionGuide && ['nutritionAge','nutritionGoal','nutritionSport','nutritionHeight','nutritionWeight','nutritionTrainingDays','nutritionAcknowledgement'].includes(field.name);
+      });
+    }
 
     const zelleRadio = document.querySelector(
       'input[name="paymentMethod"][value="zelle"]'
@@ -977,6 +985,38 @@ purchaseNotificationForm?.addEventListener('submit', async (event) => {
       ? 'Zelle'
       : 'In-Person / Cash';
 
+  let customerNotes = String(formData.get('customerNotes') || '').trim();
+  if (activePurchase.productId === 'athlete-nutrition-guide') {
+    const age = Number(formData.get('nutritionAge'));
+    if (age < 18 && formData.get('nutritionGuardianConsent') !== 'yes') {
+      purchaseNotificationStatus.textContent = 'For athletes under 18, a parent or legal guardian must acknowledge and approve this intake.';
+      purchaseModalConfirm.disabled = false;
+      updatePaymentMethod();
+      return;
+    }
+    const intakeFields = [
+      ['Athlete age', 'nutritionAge'], ['Nutrition goal', 'nutritionGoal'], ['Sport / position / event', 'nutritionSport'],
+      ['Height', 'nutritionHeight'], ['Current weight', 'nutritionWeight'], ['Target weight', 'nutritionTargetWeight'],
+      ['Training days per week', 'nutritionTrainingDays'], ['Training / practice times', 'nutritionTrainingTimes'],
+      ['Daily activity outside training', 'nutritionActivity'], ['Food allergies / intolerances', 'nutritionAllergies'],
+      ['Dietary needs / restrictions / cultural food preferences', 'nutritionDietaryNeeds'], ['Favorite / disliked foods', 'nutritionFoodPreferences'],
+      ['Typical meals and snacks', 'nutritionTypicalMeals'], ['Hydration habits', 'nutritionHydration'], ['Sleep and recovery', 'nutritionSleep'],
+      ['Supplements', 'nutritionSupplements'], ['Medical conditions / medications / clinician restrictions', 'nutritionMedical'],
+      ['Race / ethnicity (optional)', 'nutritionRace'], ['Food budget / cooking access', 'nutritionBudget'], ['Other nutrition context', 'nutritionOther']
+    ];
+    const lines = intakeFields.map(([label, name]) => `${label}: ${String(formData.get(name) || '').trim() || 'Not provided'}`);
+    lines.unshift('PERSONALIZED ATHLETE NUTRITION INTAKE');
+    lines.push(`Under-18 guardian acknowledgement: ${age < 18 ? 'Yes' : 'Not applicable'}`);
+    lines.push('Nutrition education acknowledgement: Yes');
+    customerNotes = [customerNotes, lines.join('\\n')].filter(Boolean).join('\\n\\n');
+    if (customerNotes.length > 9500) {
+      purchaseNotificationStatus.textContent = 'Your intake is too long to submit. Please shorten some optional answers and try again.';
+      purchaseModalConfirm.disabled = false;
+      updatePaymentMethod();
+      return;
+    }
+  }
+
   purchaseModalConfirm.disabled = true;
   purchaseModalConfirm.textContent = 'CREATING ORDER...';
 
@@ -998,7 +1038,7 @@ purchaseNotificationForm?.addEventListener('submit', async (event) => {
         customer_email: customerEmail,
         customer_phone: customerPhone,
         payment_method: paymentMethod,
-        notes: String(formData.get('customerNotes') || '').trim()
+        notes: customerNotes
       })
     });
 
