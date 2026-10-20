@@ -601,6 +601,9 @@
           <legend>Athlete nutrition intake</legend>
           <p class="nutrition-intake-intro">Please complete this form so your guide can be tailored to you. Required fields are marked. Share only information relevant to nutrition planning.</p>
           <div class="nutrition-intake-grid">
+            <label>Athlete full name <span class="intake-required">*</span><input type="text" name="nutritionAthleteName" maxlength="120" autocomplete="name" /></label>
+            <label>Athlete email <span class="intake-required">*</span><input type="email" name="nutritionAthleteEmail" maxlength="254" autocomplete="email" /></label>
+            <label>Athlete phone number <span class="intake-required">*</span><input type="tel" name="nutritionAthletePhone" maxlength="40" autocomplete="tel" /></label>
             <label>Age <span class="intake-required">*</span><input type="number" name="nutritionAge" min="8" max="100" inputmode="numeric" /></label>
             <label>Primary goal <span class="intake-required">*</span><select name="nutritionGoal"><option value="">Choose your goal</option><option>Build muscle / gain weight</option><option>Lose body fat</option><option>Improve sports performance</option><option>Fuel practices and games</option><option>Improve recovery</option><option>Maintain weight / healthy habits</option><option>Other / multiple goals</option></select></label>
             <label>Sport and position / event <span class="intake-required">*</span><input type="text" name="nutritionSport" maxlength="150" placeholder="e.g. football — linebacker" /></label>
@@ -618,6 +621,8 @@
             <label>Sleep and recovery<textarea name="nutritionSleep" rows="2" maxlength="300" placeholder="Typical hours of sleep and recovery concerns"></textarea></label>
             <label>Supplements currently used<textarea name="nutritionSupplements" rows="2" maxlength="400" placeholder="Name and amount if known; write “none” if none"></textarea></label>
             <label>Medical conditions, medications, or clinician-provided nutrition restrictions<textarea name="nutritionMedical" rows="3" maxlength="700" placeholder="Optional. Include only what you feel is necessary for safe nutrition planning."></textarea></label>
+            <label>Parent / legal guardian name (required if under 18)<input type="text" name="nutritionGuardianName" maxlength="120" /></label>
+            <label>Parent / legal guardian email (required if under 18)<input type="email" name="nutritionGuardianEmail" maxlength="254" /></label>
             <label>Race / ethnicity (optional)<input type="text" name="nutritionRace" maxlength="150" placeholder="Optional — skip if you prefer" /><small>Optional. This will not be used to assume your nutritional needs.</small></label>
             <label>Food budget and cooking access<textarea name="nutritionBudget" rows="2" maxlength="350" placeholder="e.g. grocery budget, access to a kitchen, school meals"></textarea></label>
             <label>Anything else that affects your nutrition goals<textarea name="nutritionOther" rows="3" maxlength="600" placeholder="Schedule, appetite, travel, season, access to food, or other relevant context"></textarea></label>
