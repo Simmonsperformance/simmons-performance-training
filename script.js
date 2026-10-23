@@ -892,7 +892,7 @@ document.querySelectorAll('[data-purchase-trigger]').forEach((trigger) => {
 
     purchaseNotificationForm.reset();
     if (nutritionIntake) {
-      const isNutritionGuide = productId === 'athlete-nutrition-guide';
+      const isNutritionGuide = productId === 'personalized-athlete-nutrition-guide';
       nutritionIntake.hidden = !isNutritionGuide;
       nutritionIntake.querySelectorAll('input, select, textarea').forEach((field) => {
         field.required = isNutritionGuide && ['nutritionAthleteName','nutritionAthleteEmail','nutritionAthletePhone','nutritionAge','nutritionGoal','nutritionSport','nutritionHeight','nutritionWeight','nutritionTrainingDays','nutritionAcknowledgement'].includes(field.name);
@@ -986,7 +986,7 @@ purchaseNotificationForm?.addEventListener('submit', async (event) => {
       : 'In-Person / Cash';
 
   let customerNotes = String(formData.get('customerNotes') || '').trim();
-  if (activePurchase.productId === 'athlete-nutrition-guide') {
+  if (activePurchase.productId === 'personalized-athlete-nutrition-guide') {
     const age = Number(formData.get('nutritionAge'));
     const guardianName = String(formData.get('nutritionGuardianName') || '').trim();
     const guardianEmail = String(formData.get('nutritionGuardianEmail') || '').trim();
