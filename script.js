@@ -860,7 +860,7 @@ document.querySelectorAll('[data-purchase-trigger]').forEach((trigger) => {
     const cardProductIds = {
       'Strength Programs': 'strength-programs',
       'Speed & Agility Programs': 'speed-agility-programs',
-      'Football Performance Programs': 'football-performance-programs',
+      'Sport-Specific Performance Programs': 'football-performance-programs',
       'General Fitness Programs': 'general-fitness-programs',
       'Training + Nutrition Bundles': 'training-nutrition-bundles'
     };
