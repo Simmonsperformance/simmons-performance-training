@@ -17,8 +17,9 @@
   grid-template-columns: repeat(4, 1fr);
 }
 
+/* Use a general athletic-training image, not a football-specific image. */
 .hero-bg {
-  background-image: url('https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=2000&q=85');
+  background-image: url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=2000&q=85');
 }
 
 .statement-photo {
