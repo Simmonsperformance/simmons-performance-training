@@ -34,3 +34,9 @@
 .hero-bottom,
 .hero > .ticker,
 .hero .hero-bottom { display: none !important; }
+
+
+/* Ensure no scroll prompt appears in the hero area. */
+.scroll-cue,
+.scroll-dot,
+.hero-bottom { display: none !important; }
