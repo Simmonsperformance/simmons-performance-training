@@ -698,10 +698,38 @@
       });
     });
   </script>
+
+  <aside class="spt-chat" id="spt-chat" aria-label="Simmons Performance AI assistant">
+    <section class="spt-chat-panel" id="spt-chat-panel" hidden aria-labelledby="spt-chat-title">
+      <header class="spt-chat-header">
+        <div class="spt-chat-avatar" aria-hidden="true">SPT</div>
+        <div><h2 id="spt-chat-title">SPT Assistant</h2><p>Website help, programs &amp; nutrition</p></div>
+        <button type="button" class="spt-chat-close" id="spt-chat-close" aria-label="Close chat">×</button>
+      </header>
+      <div class="spt-chat-disclaimer">AI assistant · For general information only. It can’t diagnose medical conditions or replace a qualified clinician.</div>
+      <div class="spt-chat-messages" id="spt-chat-messages" role="log" aria-live="polite">
+        <div class="spt-chat-message spt-chat-bot">Welcome to Simmons Performance Training. What can I help you find today? You can ask about training, nutrition guides, personalized nutrition, or how to order.</div>
+      </div>
+      <div class="spt-chat-quick" id="spt-chat-quick">
+        <button type="button" data-chat-prompt="What nutrition guides do you offer and how much do they cost?">Nutrition guides &amp; prices</button>
+        <button type="button" data-chat-prompt="How does the personalized nutrition guide work?">Personalized guide</button>
+        <button type="button" data-chat-prompt="How do I book training or contact the coach?">Training &amp; booking</button>
+      </div>
+      <form class="spt-chat-form" id="spt-chat-form">
+        <label class="spt-chat-sr" for="spt-chat-input">Message the assistant</label>
+        <textarea id="spt-chat-input" rows="1" maxlength="1200" placeholder="Ask a question…" required></textarea>
+        <button type="submit" id="spt-chat-send" aria-label="Send message"><span>Send</span> ↗</button>
+      </form>
+      <p class="spt-chat-status" id="spt-chat-status" aria-live="polite"></p>
+    </section>
+    <button type="button" class="spt-chat-launcher" id="spt-chat-launcher" aria-expanded="false" aria-controls="spt-chat-panel"><span class="spt-chat-launcher-icon" aria-hidden="true">✦</span><span>Ask AI</span></button>
+  </aside>
+
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="email-config.js"></script>
   <script src="order-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js?v=20261022-nutrition-products-v3"></script>
+  <script src="chat-assistant.js?v=20261025-v1"></script>
 </body>
 </html>
