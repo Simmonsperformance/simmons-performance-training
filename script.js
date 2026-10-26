@@ -635,7 +635,7 @@ bookingForm?.addEventListener('submit', async (event) => {
       guardian_name: parentName,
       guardian_email: parentEmail,
       athlete_phone: athletePhone,
-      guardian_phone: parentPhone,
+      guardian_phone: parentPhone || athletePhone,
       training_goals: String(formData.get('goals') || '').trim(),
 
       notes: [
