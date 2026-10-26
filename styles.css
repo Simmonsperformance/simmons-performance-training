@@ -30,13 +30,16 @@
 
 
 /* Remove the unwanted moving slogan/banner below the hero CTA. */
-.ticker,
-.hero-bottom,
-.hero > .ticker,
-.hero .hero-bottom { display: none !important; }
+
 
 
 /* Ensure no scroll prompt appears in the hero area. */
 .scroll-cue,
 .scroll-dot,
 .hero-bottom { display: none !important; }
+
+
+/* The general-sports moving banner belongs between the hero and intro. */
+.ticker { display: flex !important; background: #e30613; color: #fff; height: 48px; align-items: center; overflow: hidden; }
+.ticker-track { display: inline-block; white-space: nowrap; font-family: var(--display); font-size: 23px; letter-spacing: .09em; word-spacing: 3px; animation: move 28s linear infinite; }
+.ticker span { font-family: var(--body); font-size: 14px; margin: 0 22px; color: #fff; }
