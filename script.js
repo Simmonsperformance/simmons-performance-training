@@ -584,7 +584,8 @@ bookingForm?.addEventListener('submit', async (event) => {
     bookingStatus.textContent =
       'Please enter a valid athlete or parent/guardian email address.';
 
-    bookingForm.elements.athleteEmail?.focus();
+    const emailToFocus = enteredAthleteEmail ? bookingForm.elements.parentEmail : bookingForm.elements.athleteEmail;
+    emailToFocus?.focus();
     return;
   }
 
