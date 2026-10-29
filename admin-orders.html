@@ -44,7 +44,7 @@
   <main>
     <section class="panel login-panel" id="login-panel">
       <h2>Administrator sign in</h2>
-      <p class="muted">Only the configured order administrator can view or manage orders.</p>
+      <p class="muted">Only the authorized administrator can view or manage orders.</p>
       <form id="login-form">
         <label>Email<input type="email" name="email" autocomplete="username" required></label>
         <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
@@ -53,7 +53,7 @@
       <p class="status" id="login-status" role="status" aria-live="polite"></p>
     </section>
     <section id="orders-panel" hidden>
-      <div class="toolbar"><p class="muted">Manage digital orders and appointments here. Verify payment before confirming either workflow.</p><div><button id="refresh-orders">Refresh orders</button> <button id="sign-out">Sign out</button></div></div>
+      <div class="toolbar"><p class="muted">Manage digital orders and appointments here. Verify payment before confirming an order or appointment.</p><div><button id="refresh-orders">Refresh orders</button> <button id="sign-out">Sign out</button></div></div>
       <nav class="admin-tabs" aria-label="Admin sections">
         <button id="orders-tab-button" type="button" aria-selected="true">Digital orders</button>
         <button id="appointments-tab-button" type="button" aria-selected="false">Appointments</button>
@@ -125,7 +125,7 @@
       const renderOrders = (orders) => {
         ordersContainer.replaceChildren();
         if (!orders.length) {
-          ordersStatus.textContent = 'No orders found.';
+          ordersStatus.textContent = 'No orders were found.';
           return;
         }
         ordersStatus.textContent = '';
@@ -159,7 +159,7 @@
             const confirm = document.createElement('button');
             confirm.className = 'primary';
             confirm.textContent = order.product_id === 'athlete-nutrition-guide' ? 'Verify payment (personalized guide)' : 'Confirm payment and deliver';
-            confirm.addEventListener('click', () => runAction(order.id, 'confirm_payment', 'Confirm only after verifying payment reached your account.'));
+            confirm.addEventListener('click', () => runAction(order.id, 'confirm_payment', 'Confirm only after verifying that the payment has reached your account.'));
             actions.append(confirm);
           } else if (order.payment_status === 'paid' && order.delivery_status === 'awaiting_manual' && order.product_id === 'athlete-nutrition-guide') {
             const markSent = document.createElement('button');
