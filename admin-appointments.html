@@ -23,7 +23,7 @@
 <body>
 <main>
   <h1>Simmons Performance Training</h1>
-  <h2>Appointment Administration</h2>
+  <h2>Appointment Management</h2>
 
   <section id="login" class="panel">
     <h3>Administrator sign in</h3>
@@ -37,7 +37,7 @@
     <div class="panel row">
       <div>
         <strong>Appointment requests</strong>
-        <p class="muted">Approve requests first. Confirm only after payment is verified.</p>
+        <p class="muted">Approve appointment requests first. Confirm appointments only after verifying payment.</p>
       </div>
       <a href="admin-orders.html" style="display:inline-block;padding:11px;background:#c6a15b;color:#111;text-decoration:none;font-weight:bold;border-radius:5px">Digital Orders</a>
       <button id="refresh">Refresh</button>
@@ -144,11 +144,11 @@
             : emailStatus === "missing_customer_email"
               ? " WARNING: no customer email address was saved."
               : " WARNING: customer email was not sent. Check the EmailJS template configuration.";
-        showMessage("Appointment and payment confirmed." + emailMessage, emailStatus !== "sent");
+        showMessage("The appointment and payment have been confirmed." + emailMessage, emailStatus !== "sent");
       } else {
         showMessage(action === "approve"
-          ? "Appointment approved. Payment still needs to be verified."
-          : "Appointment rejected.");
+          ? "The appointment has been approved. Payment still needs to be verified."
+          : "The appointment request has been rejected.");
       }
       await loadAppointments();
     } catch (error) {
@@ -189,7 +189,7 @@
     addField(card, "Requested", formatDate(booking.created_at));
 
     const notes = document.createElement("textarea");
-    notes.placeholder = "Private admin notes (optional)";
+    notes.placeholder = "Private administrator notes (optional)";
     notes.value = booking.admin_notes || "";
     card.appendChild(notes);
 
@@ -221,7 +221,7 @@
       const verify = make("button", "Verify payment & confirm");
       verify.onclick = () => {
         if (!method.value) {
-          showMessage("Select Zelle or cash first.", true);
+          showMessage("Select Zelle or cash before continuing.", true);
           return;
         }
         if (confirm("Confirm that you personally verified this payment?")) {
@@ -252,7 +252,7 @@
       const appointments = result.appointments || [];
 
       if (!appointments.length) {
-        list.appendChild(make("p", "No appointment requests found."));
+        list.appendChild(make("p", "No appointment requests were found."));
       } else {
         appointments.forEach(renderAppointment);
       }
