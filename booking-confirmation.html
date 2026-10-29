@@ -106,11 +106,10 @@
   <main class="confirmation">
     <div class="brand">Simmons<br>Performance Training</div>
 
-    <h1>Appointment Reserved</h1>
+    <h1>Appointment Request Received</h1>
 
     <p class="intro">
-      Thank you for booking with Simmons Performance Training.
-      Your appointment reservation was successfully submitted.
+      Thank you for requesting an appointment with Simmons Performance Training. Your request has been submitted successfully.
     </p>
 
     <section class="details" aria-label="Appointment details">
@@ -141,7 +140,7 @@
     </section>
 
     <div class="notice" id="email-notice">
-      Your appointment request has been reserved. It is not confirmed until Simmons Performance Training approves it and verifies payment.
+      Your appointment request has been received. It is not confirmed until Simmons Performance Training approves it and verifies payment.
     </div>
 
     <section class="details" id="zelle-instructions" aria-labelledby="zelle-heading" hidden>
@@ -155,13 +154,13 @@
     </section>
 
     <section class="details waiver-next-step" aria-labelledby="waiver-heading">
-      <h2 id="waiver-heading">Next Step: Sign Your Liability Waiver</h2>
-      <p class="intro">Before your first training session, please complete the Simmons Performance Training liability waiver. This link is for adult clients. For athletes under 18, contact Simmons Performance Training to arrange parent or guardian consent.</p>
+      <h2 id="waiver-heading">Next step: Sign your liability waiver</h2>
+      <p class="intro">Before your first training session, please complete the Simmons Performance Training liability waiver. This link is for adult clients. For athletes under 18, please contact Simmons Performance Training to arrange consent from a parent or legal guardian.</p>
       <a href="https://www.jotform.com/sign/262849306953064/invite/01m507q0x286182743cb37c604" target="_blank" rel="noopener noreferrer">SIGN LIABILITY WAIVER</a>
-      <p class="intro">The waiver opens in a new tab. Please finish and submit it, then return to this appointment page.</p>
+      <p class="intro">The waiver opens in a new tab. Complete and submit it, then return to this appointment page.</p>
     </section>
 
-    <a href="index.html">Return to Website</a>
+    <a href="index.html">Return to website</a>
   </main>
 
   <script>
@@ -188,7 +187,7 @@
 
         document.getElementById('email-notice').textContent =
           booking.emailNotice ||
-          'Your appointment request is reserved. It is not confirmed until Simmons Performance Training approves it and verifies payment.';
+          'Your appointment request has been received. It is not confirmed until Simmons Performance Training approves it and verifies payment.';
 
         const zelle = booking.paymentInstructions;
         const zellePanel = document.getElementById('zelle-instructions');
