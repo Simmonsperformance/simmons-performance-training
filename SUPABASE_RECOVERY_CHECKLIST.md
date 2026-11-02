@@ -13,7 +13,7 @@ Supabase project ref: abbvzklzlsvyytlwhnmg
   - smooth-service (display name: Connection-test) — v26
   - manage-appointments — v13
   - customer-ai-assistant — v5
-- Current public tables inspected: booking_slots, bookings, digital_products, digital_orders, digital_order_rate_limits. All had RLS enabled; the API's row estimates/counts were 0 at audit time. This is not a database data export.
+- Current public tables inspected: booking_slots, bookings, digital_products, digital_orders, digital_order_rate_limits. All five have RLS enabled. Actual SQL counts on 2026-11-01: bookings 46; booking_slots 9,240; digital_orders 17; digital_products 10; digital_order_rate_limits 11. There is 1 auth.users account. Customer/order rows are NOT exported to GitHub.
 - The deployed database reports 11 applied migrations. The repository contains only a partial and partly differently-versioned set of migration files. Do not assume the checked-in migrations alone can recreate the exact current database.
 
 ## Applied migration history reported by Supabase
@@ -44,7 +44,7 @@ Never commit secret values to GitHub. In Supabase Dashboard, record the current 
 Also verify any other configured secrets in the Supabase project's Edge Function Secrets page, including any older EmailJS template variables such as EMAILJS_ORDER_TEMPLATE_ID and EMAILJS_DELIVERY_TEMPLATE_ID. Secret values were not accessible to this audit and are not backed up here.
 
 ## Still required before calling recovery complete
-1. Export a full database schema dump from the Supabase project (tables, columns, constraints, indexes, RLS policies, grants, triggers, SQL functions/RPCs, extensions, and storage policies). The current repository migration files do not match the full applied migration history.
+1. A schema/storage inventory snapshot is now saved at `supabase/schema-backup/SCHEMA_AND_STORAGE_INVENTORY_2026-11-01.md`. Still obtain a proper full database dump (schema + data) using Supabase Database > Backups if a downloadable backup is available, or Supabase CLI `db dump`/`pg_dump`. The current repository migration files do not match the full applied migration history.
 2. Export database data separately, even though the five inspected public tables reported 0 rows at audit time. Confirm whether any other schemas contain data.
 3. Back up Storage buckets and their objects (including nutrition PDFs) and record bucket access policies. This audit did not verify storage.
 4. Securely back up all current Supabase Edge Function secret values and required Auth configuration/provider settings. Do not place secrets in this repository.
@@ -53,3 +53,18 @@ Also verify any other configured secrets in the Supabase project's Edge Function
 
 ## Important
 A GitHub source backup does not preserve Supabase database records, Storage objects, Auth users/settings, or secret values. Pausing a project is different from deleting it, but recovery should not depend on a successful unpause.
+
+## Exact private Storage objects found (bytes not yet downloaded)
+Bucket: `digital-products-private` (private; PDF-only; 50 MiB object limit)
+- `athlete-nutrition-guide/Simmons_Performance_Athlete_Nutrition_Guide_PREMIUM.pdf`
+- `fat-loss-nutrition-guide/Simmons_Performance_Fat_Loss_Nutrition_Guide_PREMIUM.pdf`
+- `general-fitness-programs/Simmons_Performance_General_Fitness_Programs_PREMIUM_FIXED.pdf`
+- `meal-prep-grocery-guide/Simmons_Performance_Meal_Prep_Grocery_Guide_PREMIUM.pdf`
+- `muscle-building-nutrition-guide/Simmons_Performance_Muscle_Building_Nutrition_Guide_PREMIUM.pdf`
+
+## Next dashboard actions
+1. In the Supabase Dashboard, open **Database → Backups**. If a downloadable backup is available, download the newest one to a private local folder such as `SPT-Disaster-Recovery/Database/`. Do not upload this backup to public GitHub.
+2. If no downloadable backup is available, create a logical dump with the Supabase CLI/pg_dump. The dump must include application schema and data; protect it because it contains customer contact details and order records.
+3. Open **Storage → Files → digital-products-private** and download all five PDF files to `SPT-Disaster-Recovery/Storage/digital-products-private/`. Verify five PDFs exist and their file sizes are nonzero.
+4. Open **Edge Functions → Secrets** and privately record every configured secret name/value in a password manager or encrypted file. Do not share secret values in chat or commit them to GitHub.
+5. Open **Authentication → Users** and confirm the single admin account can be recreated. Do not export password hashes or publish user records.
